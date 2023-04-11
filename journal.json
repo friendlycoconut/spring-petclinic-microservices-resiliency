@@ -1,0 +1,298 @@
+{
+  "chaoslib-version": "1.34.1",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "node": "DESKTOP-CLHED1H",
+  "experiment": {
+    "version": "1.0.0",
+    "title": "Get Players when database is down",
+    "description": "N/A",
+    "tags": [],
+    "steady-state-hypothesis": {
+      "title": "Player data is available",
+      "probes": [
+        {
+          "type": "probe",
+          "name": "we-can-retrieve-owners-data",
+          "tolerance": 200,
+          "provider": {
+            "type": "http",
+            "timeout": 5,
+            "url": "http://localhost:54348/owners/1"
+          }
+        }
+      ]
+    },
+    "method": [
+      {
+        "name": "enable_chaosmonkey",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:54348/actuator"
+          },
+          "func": "enable_chaosmonkey",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      },
+      {
+        "name": "configure_assaults",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:54348/actuator",
+            "assaults_configuration": {
+              "level": 1,
+              "deterministic": true,
+              "latencyRangeStart": 500,
+              "latencyRangeEnd": 5000,
+              "latencyActive": true,
+              "exceptionsActive": true,
+              "killApplicationActive": true,
+              "exception": {
+                "type": "java.net.ConnectException",
+                "arguments": [
+                  {
+                    "className": "java.lang.String",
+                    "value": "Connection timed out"
+                  }
+                ]
+              }
+            }
+          },
+          "func": "change_assaults_configuration",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      },
+      {
+        "name": "configure_repository_watcher",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "url": "http://localhost:54348/actuator/chaosmonkey/watchers",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "controller": false,
+            "restController": false,
+            "service": true,
+            "repository": false,
+            "component": false
+          }
+        },
+        "type": "action"
+      }
+    ],
+    "rollbacks": [],
+    "dry": null
+  },
+  "start": "2023-04-11T20:07:21.805230",
+  "status": "completed",
+  "deviated": false,
+  "steady_states": {
+    "before": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "we-can-retrieve-owners-data",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "timeout": 5,
+              "url": "http://localhost:54348/owners/1"
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "Content-Type": "application/json",
+              "Transfer-Encoding": "chunked",
+              "Date": "Tue, 11 Apr 2023 20:07:21 GMT",
+              "Keep-Alive": "timeout=60",
+              "Connection": "keep-alive"
+            },
+            "body": {
+              "id": 1,
+              "firstName": "George",
+              "lastName": "Franklin",
+              "address": "110 W. Liberty St.",
+              "city": "Madison",
+              "telephone": "6085551023",
+              "pets": [
+                {
+                  "id": 1,
+                  "name": "Leo",
+                  "birthDate": "2010-09-07",
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  }
+                }
+              ]
+            }
+          },
+          "start": "2023-04-11T20:07:21.808648",
+          "status": "succeeded",
+          "end": "2023-04-11T20:07:21.842652",
+          "duration": 0.034004,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "after": {
+      "steady_state_met": true,
+      "probes": [
+        {
+          "activity": {
+            "type": "probe",
+            "name": "we-can-retrieve-owners-data",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "timeout": 5,
+              "url": "http://localhost:54348/owners/1"
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "Content-Type": "application/json",
+              "Transfer-Encoding": "chunked",
+              "Date": "Tue, 11 Apr 2023 20:07:21 GMT",
+              "Keep-Alive": "timeout=60",
+              "Connection": "keep-alive"
+            },
+            "body": {
+              "id": 1,
+              "firstName": "George",
+              "lastName": "Franklin",
+              "address": "110 W. Liberty St.",
+              "city": "Madison",
+              "telephone": "6085551023",
+              "pets": [
+                {
+                  "id": 1,
+                  "name": "Leo",
+                  "birthDate": "2010-09-07",
+                  "type": {
+                    "id": 1,
+                    "name": "cat"
+                  }
+                }
+              ]
+            }
+          },
+          "start": "2023-04-11T20:07:22.051350",
+          "status": "succeeded",
+          "end": "2023-04-11T20:07:22.058344",
+          "duration": 0.006994,
+          "tolerance_met": true
+        }
+      ]
+    },
+    "during": []
+  },
+  "run": [
+    {
+      "activity": {
+        "name": "enable_chaosmonkey",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:54348/actuator"
+          },
+          "func": "enable_chaosmonkey",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      },
+      "output": "{\"enabledAt\":\"2023-04-10T22:32:32.575+02:00\",\"enabledFor\":{\"raw\":\"PT23H34M49.279S\",\"formatted\":\"23 hours 34 minutes 49 seconds\"},\"enabled\":true}",
+      "start": "2023-04-11T20:07:21.844646",
+      "status": "succeeded",
+      "end": "2023-04-11T20:07:21.973842",
+      "duration": 0.129196
+    },
+    {
+      "activity": {
+        "name": "configure_assaults",
+        "provider": {
+          "arguments": {
+            "base_url": "http://localhost:54348/actuator",
+            "assaults_configuration": {
+              "level": 1,
+              "deterministic": true,
+              "latencyRangeStart": 500,
+              "latencyRangeEnd": 5000,
+              "latencyActive": true,
+              "exceptionsActive": true,
+              "killApplicationActive": true,
+              "exception": {
+                "type": "java.net.ConnectException",
+                "arguments": [
+                  {
+                    "className": "java.lang.String",
+                    "value": "Connection timed out"
+                  }
+                ]
+              }
+            }
+          },
+          "func": "change_assaults_configuration",
+          "module": "chaosspring.actions",
+          "type": "python"
+        },
+        "type": "action"
+      },
+      "output": "Assault config has changed",
+      "start": "2023-04-11T20:07:21.974796",
+      "status": "succeeded",
+      "end": "2023-04-11T20:07:22.034341",
+      "duration": 0.059545
+    },
+    {
+      "activity": {
+        "name": "configure_repository_watcher",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "url": "http://localhost:54348/actuator/chaosmonkey/watchers",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "arguments": {
+            "controller": false,
+            "restController": false,
+            "service": true,
+            "repository": false,
+            "component": false
+          }
+        },
+        "type": "action"
+      },
+      "output": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "text/plain;charset=UTF-8",
+          "Content-Length": "26",
+          "Date": "Tue, 11 Apr 2023 20:07:21 GMT",
+          "Keep-Alive": "timeout=60",
+          "Connection": "keep-alive"
+        },
+        "body": "Watcher config has changed"
+      },
+      "start": "2023-04-11T20:07:22.036341",
+      "status": "succeeded",
+      "end": "2023-04-11T20:07:22.049338",
+      "duration": 0.012997
+    }
+  ],
+  "rollbacks": [],
+  "end": "2023-04-11T20:07:22.061343",
+  "duration": 0.25611352920532227
+}

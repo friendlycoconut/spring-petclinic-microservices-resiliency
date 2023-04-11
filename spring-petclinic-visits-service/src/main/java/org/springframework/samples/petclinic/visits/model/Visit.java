@@ -64,4 +64,5 @@ public class Visit {
     @Column(name = "pet_id")
     private int petId;
 
+
 }

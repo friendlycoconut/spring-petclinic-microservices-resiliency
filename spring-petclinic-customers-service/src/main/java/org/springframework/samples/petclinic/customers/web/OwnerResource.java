@@ -15,12 +15,16 @@
  */
 package org.springframework.samples.petclinic.customers.web;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.customers.model.Owner;
 import org.springframework.samples.petclinic.customers.model.OwnerRepository;
+import org.springframework.samples.petclinic.customers.services.OwnersService;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -44,6 +48,9 @@ class OwnerResource {
 
     private final OwnerRepository ownerRepository;
 
+    @Autowired
+    private OwnersService ownersService;
+
     /**
      * Create Owner
      */
@@ -60,13 +67,16 @@ class OwnerResource {
     public Optional<Owner> findOwner(@PathVariable("ownerId") @Min(1) int ownerId) {
         return ownerRepository.findById(ownerId);
     }
-
+    public String fallbackAfterRetry(Exception ex) {
+        return "all retries have exhausted";
+    }
     /**
      * Read List of Owners
      */
+    @Retry(name = "retryApi")
     @GetMapping
     public List<Owner> findAll() {
-        return ownerRepository.findAll();
+        return ownersService.getAllOwners();
     }
 
     /**
@@ -87,4 +97,8 @@ class OwnerResource {
         log.info("Saving owner {}", ownerModel);
         ownerRepository.save(ownerModel);
     }
+
+
+
+
 }

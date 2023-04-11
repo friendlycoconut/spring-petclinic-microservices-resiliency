@@ -4,6 +4,13 @@ spring:
   config:
     import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
 
+chaos:
+  monkey:
+    enabled: true
+    watcher:
+      service: true
+    assaults:
+      latencyActive: true
 
 ---
 spring:

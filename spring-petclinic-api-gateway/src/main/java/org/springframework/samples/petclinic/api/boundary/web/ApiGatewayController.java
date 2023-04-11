@@ -65,7 +65,7 @@ public class ApiGatewayController {
                 .forEach(pet -> pet.getVisits()
                     .addAll(visits.getItems().stream()
                         .filter(v -> v.getPetId() == pet.getId())
-                        .collect(Collectors.toList()))
+                        .toList())
                 );
             return owner;
         };

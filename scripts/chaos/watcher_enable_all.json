@@ -1,0 +1,10 @@
+{
+  "controller": true,
+  "restController": true,
+  "service": true,
+  "repository": true,
+  "component": true,
+  "restTemplate": true,
+  "webClient": true,
+  "actuatorHealth": true
+}

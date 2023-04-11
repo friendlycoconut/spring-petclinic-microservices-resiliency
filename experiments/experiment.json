@@ -1,0 +1,88 @@
+{
+  "version": "1.0.0",
+  "title": "Get Players when database is down",
+  "description": "N/A",
+  "tags": [],
+  "steady-state-hypothesis": {
+    "title": "Player data is available",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "timeout": 5,
+          "url": "http://localhost:54348/owners/1"
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "name": "enable_chaosmonkey",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:54348/actuator"
+        },
+        "func": "enable_chaosmonkey",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_assaults",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:54348/actuator",
+          "assaults_configuration": {
+            "level": 1,
+            "deterministic": true,
+            "latencyRangeStart": 500,
+            "latencyRangeEnd": 5000,
+            "latencyActive": true,
+            "exceptionsActive": true,
+            "killApplicationActive": true,
+            "exception": {
+              "type": "java.net.ConnectException",
+              "arguments": [
+                {
+                  "className": "java.lang.String",
+                  "value": "Connection timed out"
+                }
+              ]
+            }
+          }
+        },
+        "func": "change_assaults_configuration",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_repository_watcher",
+      "tolerance": 200,
+      "provider": {
+        "type": "http",
+        "url": "http://localhost:54348/actuator/chaosmonkey/watchers",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "arguments": {
+          "controller": false,
+          "restController": false,
+          "service": true,
+          "repository": false,
+          "component": false
+        }
+      },
+      "type": "action"
+    }
+  ],
+  "rollbacks": [
+
+  ]
+}
