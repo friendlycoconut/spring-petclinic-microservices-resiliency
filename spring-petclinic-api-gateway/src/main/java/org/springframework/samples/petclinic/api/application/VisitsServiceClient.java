@@ -45,6 +45,14 @@ public class VisitsServiceClient {
             .bodyToMono(Visits.class);
     }
 
+    public Mono<Visits> getVisitsForOnePet(final int petId) {
+        return webClientBuilder.build()
+            .get()
+            .uri(hostname + "pets/visits?petId={petId}", petId)
+            .retrieve()
+            .bodyToMono( Visits.class);
+    }
+
     private String joinIds(List<Integer> petIds) {
         return petIds.stream().map(Object::toString).collect(joining(","));
     }

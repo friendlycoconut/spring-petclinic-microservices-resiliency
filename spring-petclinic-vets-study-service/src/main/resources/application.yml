@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: study-service
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
+
+chaos:
+  monkey:
+    enabled: true
+    watcher:
+      service: true
+    assaults:
+      latencyActive: true
+
+management:
+  endpoint:
+    chaosmonkey:
+      enabled: true
+    chaosmonkeyjmx:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        # include all endpoints
+        include:
+          - health
+          - info
+          - chaosmonkey
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+    import: configserver:http://config-server:8888
+
+resilience4j:
+  retry:
+    instances:
+      myRetry:
+        max-attempts: 7
+        wait-duration: 1s

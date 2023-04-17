@@ -1,10 +1,11 @@
-package org.springframework.samples.petclinic.customers.config;
+package org.springframework.samples.petclinic.study.config;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 @Configuration
 public class MetricConfig {
 
@@ -19,4 +20,3 @@ public class MetricConfig {
     }
 
 }
-

@@ -21,6 +21,7 @@ import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFac
 import org.springframework.samples.petclinic.api.application.CustomersServiceClient;
 import org.springframework.samples.petclinic.api.application.VisitsServiceClient;
 import org.springframework.samples.petclinic.api.dto.OwnerDetails;
+import org.springframework.samples.petclinic.api.dto.PetDetails;
 import org.springframework.samples.petclinic.api.dto.Visits;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author Maciej Szarlinski
@@ -59,6 +59,15 @@ public class ApiGatewayController {
 
     }
 
+    @GetMapping(value = "owners/*/pets/{petId}")
+    public Mono<PetDetails> getPetDetails(final @PathVariable int petId) {
+        return customersServiceClient.getPetById(petId)
+            .flatMap(pet ->
+                            visitsServiceClient.getVisitsForOnePet(pet.getId())
+            .map(addVisitToPet(pet)));
+
+    }
+
     private Function<Visits, OwnerDetails> addVisitsToOwner(OwnerDetails owner) {
         return visits -> {
             owner.getPets()
@@ -68,6 +77,16 @@ public class ApiGatewayController {
                         .toList())
                 );
             return owner;
+        };
+    }
+
+    private Function<Visits, PetDetails> addVisitToPet(PetDetails pet){
+        return visit -> {
+           pet.getVisits()
+                    .addAll(visit.getItems().stream()
+                        .filter(v -> v.getPetId() == pet.getId())
+                        .toList());
+            return pet;
         };
     }
 
