@@ -63,9 +63,19 @@ class OwnerResource {
     /**
      * Read single Owner
      */
+    @Retry(name = "retryExp1")
     @GetMapping(value = "/{ownerId}")
     public Optional<Owner> findOwner(@PathVariable("ownerId") @Min(1) int ownerId) {
-        return ownerRepository.findById(ownerId);
+        return ownersService.getOwnerById(ownerId);
+    }
+
+    /**
+     * Read single Owner Retry pattern 2
+     */
+    @Retry(name = "retryExp2")
+    @GetMapping(value = "/retryExponential/{ownerId}")
+    public Optional<Owner> findOwnerRetryExponential(@PathVariable("ownerId") @Min(1) int ownerId) {
+        return ownersService.getOwnerByIdRetryExponential(ownerId);
     }
     public String fallbackAfterRetry(Exception ex) {
         return "all retries have exhausted";
@@ -73,7 +83,7 @@ class OwnerResource {
     /**
      * Read List of Owners
      */
-    @Retry(name = "retryApi")
+    @Retry(name = "retryExp1")
     @GetMapping
     public List<Owner> findAll() {
         return ownersService.getAllOwners();

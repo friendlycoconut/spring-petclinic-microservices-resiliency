@@ -78,12 +78,16 @@ public class ApiGatewayApplication {
     }
 
     /**
-     * Default Resilience4j circuit breaker configuration
+     * Changed factorized Resilience4j circuit breaker configuration
      */
     @Bean
     public Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer() {
         return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
-            .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
+            .circuitBreakerConfig(CircuitBreakerConfig.custom()
+                .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
+                .slidingWindowSize(3)
+                .failureRateThreshold(30.0f)
+                .build())
             .timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(4)).build())
             .build());
     }

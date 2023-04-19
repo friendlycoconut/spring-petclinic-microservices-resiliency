@@ -11,6 +11,7 @@ chaos:
       service: true
     assaults:
       latencyActive: true
+      kill-application-active: true
 
 management:
   endpoint:

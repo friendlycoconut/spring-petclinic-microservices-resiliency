@@ -1,3 +1,4 @@
 {
-    "killApplicationActive": true
+    "killApplicationActive": true,
+    "killApplicationCronExpression": "*/10 * * * * *"
 }

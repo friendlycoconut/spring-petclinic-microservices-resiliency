@@ -38,6 +38,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
+import org.springframework.samples.petclinic.vets.dto.StudyDetails;
 
 /**
  * Simple JavaBean domain object representing a veterinarian.
@@ -75,6 +76,8 @@ public class Vet {
     @JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"),
         inverseJoinColumns = @JoinColumn(name = "specialty_id"))
     private Set<Specialty> specialties;
+
+
 
     protected Set<Specialty> getSpecialtiesInternal() {
         if (this.specialties == null) {

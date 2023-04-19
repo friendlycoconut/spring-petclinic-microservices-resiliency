@@ -4,11 +4,11 @@
   "node": "DESKTOP-CLHED1H",
   "experiment": {
     "version": "1.0.0",
-    "title": "Get Players when database is down",
+    "title": "Get Owners when microservice is killed",
     "description": "N/A",
     "tags": [],
     "steady-state-hypothesis": {
-      "title": "Player data is available",
+      "title": "Owner data is available",
       "probes": [
         {
           "type": "probe",
@@ -16,8 +16,16 @@
           "tolerance": 200,
           "provider": {
             "type": "http",
-            "timeout": 5,
-            "url": "http://localhost:54348/owners/1"
+            "url": "http://localhost:54494/owners"
+          }
+        },
+        {
+          "type": "probe",
+          "name": "we-can-retrieve-owner-by-id-data",
+          "tolerance": 200,
+          "provider": {
+            "type": "http",
+            "url": "http://localhost:54494/owners/retryExponential/1"
           }
         }
       ]
@@ -27,7 +35,7 @@
         "name": "enable_chaosmonkey",
         "provider": {
           "arguments": {
-            "base_url": "http://localhost:54348/actuator"
+            "base_url": "http://localhost:54494/actuator"
           },
           "func": "enable_chaosmonkey",
           "module": "chaosspring.actions",
@@ -39,13 +47,13 @@
         "name": "configure_assaults",
         "provider": {
           "arguments": {
-            "base_url": "http://localhost:54348/actuator",
+            "base_url": "http://localhost:54494/actuator",
             "assaults_configuration": {
-              "level": 1,
+              "level": 5,
               "deterministic": true,
-              "latencyRangeStart": 500,
-              "latencyRangeEnd": 5000,
-              "latencyActive": true,
+              "latencyRangeStart": 200,
+              "latencyRangeEnd": 500,
+              "latencyActive": false,
               "exceptionsActive": true,
               "killApplicationActive": true,
               "exception": {
@@ -70,14 +78,14 @@
         "tolerance": 200,
         "provider": {
           "type": "http",
-          "url": "http://localhost:54348/actuator/chaosmonkey/watchers",
+          "url": "http://localhost:54494/actuator/chaosmonkey/watchers",
           "method": "POST",
           "headers": {
             "Content-Type": "application/json"
           },
           "arguments": {
             "controller": false,
-            "restController": false,
+            "restController": true,
             "service": true,
             "repository": false,
             "component": false
@@ -89,7 +97,7 @@
     "rollbacks": [],
     "dry": null
   },
-  "start": "2023-04-11T20:07:21.805230",
+  "start": "2023-04-18T18:08:55.494889",
   "status": "completed",
   "deviated": false,
   "steady_states": {
@@ -103,8 +111,7 @@
             "tolerance": 200,
             "provider": {
               "type": "http",
-              "timeout": 5,
-              "url": "http://localhost:54348/owners/1"
+              "url": "http://localhost:54494/owners"
             }
           },
           "output": {
@@ -112,7 +119,252 @@
             "headers": {
               "Content-Type": "application/json",
               "Transfer-Encoding": "chunked",
-              "Date": "Tue, 11 Apr 2023 20:07:21 GMT",
+              "Date": "Tue, 18 Apr 2023 18:08:55 GMT",
+              "Keep-Alive": "timeout=60",
+              "Connection": "keep-alive"
+            },
+            "body": [
+              {
+                "id": 1,
+                "firstName": "George",
+                "lastName": "Franklin",
+                "address": "110 W. Liberty St.",
+                "city": "Madison",
+                "telephone": "6085551023",
+                "pets": [
+                  {
+                    "id": 1,
+                    "name": "Leo",
+                    "birthDate": "2010-09-07",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 2,
+                "firstName": "Betty",
+                "lastName": "Davis",
+                "address": "638 Cardinal Ave.",
+                "city": "Sun Prairie",
+                "telephone": "6085551749",
+                "pets": [
+                  {
+                    "id": 2,
+                    "name": "Basil",
+                    "birthDate": "2012-08-06",
+                    "type": {
+                      "id": 6,
+                      "name": "hamster"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 3,
+                "firstName": "Eduardo",
+                "lastName": "Rodriquez",
+                "address": "2693 Commerce St.",
+                "city": "McFarland",
+                "telephone": "6085558763",
+                "pets": [
+                  {
+                    "id": 4,
+                    "name": "Jewel",
+                    "birthDate": "2010-03-07",
+                    "type": {
+                      "id": 2,
+                      "name": "dog"
+                    }
+                  },
+                  {
+                    "id": 3,
+                    "name": "Rosy",
+                    "birthDate": "2011-04-17",
+                    "type": {
+                      "id": 2,
+                      "name": "dog"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 4,
+                "firstName": "Harold",
+                "lastName": "Davis",
+                "address": "563 Friendly St.",
+                "city": "Windsor",
+                "telephone": "6085553198",
+                "pets": [
+                  {
+                    "id": 5,
+                    "name": "Iggy",
+                    "birthDate": "2010-11-30",
+                    "type": {
+                      "id": 3,
+                      "name": "lizard"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 5,
+                "firstName": "Peter",
+                "lastName": "McTavish",
+                "address": "2387 S. Fair Way",
+                "city": "Madison",
+                "telephone": "6085552765",
+                "pets": [
+                  {
+                    "id": 6,
+                    "name": "George",
+                    "birthDate": "2010-01-20",
+                    "type": {
+                      "id": 4,
+                      "name": "snake"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 6,
+                "firstName": "Jean",
+                "lastName": "Coleman",
+                "address": "105 N. Lake St.",
+                "city": "Monona",
+                "telephone": "6085552654",
+                "pets": [
+                  {
+                    "id": 8,
+                    "name": "Max",
+                    "birthDate": "2012-09-04",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  },
+                  {
+                    "id": 7,
+                    "name": "Samantha",
+                    "birthDate": "2012-09-04",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 7,
+                "firstName": "Jeff",
+                "lastName": "Black",
+                "address": "1450 Oak Blvd.",
+                "city": "Monona",
+                "telephone": "6085555387",
+                "pets": [
+                  {
+                    "id": 9,
+                    "name": "Lucky",
+                    "birthDate": "2011-08-06",
+                    "type": {
+                      "id": 5,
+                      "name": "bird"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 8,
+                "firstName": "Maria",
+                "lastName": "Escobito",
+                "address": "345 Maple St.",
+                "city": "Madison",
+                "telephone": "6085557683",
+                "pets": [
+                  {
+                    "id": 10,
+                    "name": "Mulligan",
+                    "birthDate": "2007-02-24",
+                    "type": {
+                      "id": 2,
+                      "name": "dog"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 9,
+                "firstName": "David",
+                "lastName": "Schroeder",
+                "address": "2749 Blackhawk Trail",
+                "city": "Madison",
+                "telephone": "6085559435",
+                "pets": [
+                  {
+                    "id": 11,
+                    "name": "Freddy",
+                    "birthDate": "2010-03-09",
+                    "type": {
+                      "id": 5,
+                      "name": "bird"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 10,
+                "firstName": "Carlos",
+                "lastName": "Estaban",
+                "address": "2335 Independence La.",
+                "city": "Waunakee",
+                "telephone": "6085555487",
+                "pets": [
+                  {
+                    "id": 12,
+                    "name": "Lucky",
+                    "birthDate": "2010-06-24",
+                    "type": {
+                      "id": 2,
+                      "name": "dog"
+                    }
+                  },
+                  {
+                    "id": 13,
+                    "name": "Sly",
+                    "birthDate": "2012-06-08",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "start": "2023-04-18T18:08:55.498892",
+          "status": "succeeded",
+          "end": "2023-04-18T18:08:55.515924",
+          "duration": 0.017032,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "type": "probe",
+            "name": "we-can-retrieve-owner-by-id-data",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:54494/owners/retryExponential/1"
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "Content-Type": "application/json",
+              "Transfer-Encoding": "chunked",
+              "Date": "Tue, 18 Apr 2023 18:08:56 GMT",
               "Keep-Alive": "timeout=60",
               "Connection": "keep-alive"
             },
@@ -136,10 +388,10 @@
               ]
             }
           },
-          "start": "2023-04-11T20:07:21.808648",
+          "start": "2023-04-18T18:08:55.517896",
           "status": "succeeded",
-          "end": "2023-04-11T20:07:21.842652",
-          "duration": 0.034004,
+          "end": "2023-04-18T18:08:56.862035",
+          "duration": 1.344139,
           "tolerance_met": true
         }
       ]
@@ -154,8 +406,7 @@
             "tolerance": 200,
             "provider": {
               "type": "http",
-              "timeout": 5,
-              "url": "http://localhost:54348/owners/1"
+              "url": "http://localhost:54494/owners"
             }
           },
           "output": {
@@ -163,7 +414,252 @@
             "headers": {
               "Content-Type": "application/json",
               "Transfer-Encoding": "chunked",
-              "Date": "Tue, 11 Apr 2023 20:07:21 GMT",
+              "Date": "Tue, 18 Apr 2023 18:08:56 GMT",
+              "Keep-Alive": "timeout=60",
+              "Connection": "keep-alive"
+            },
+            "body": [
+              {
+                "id": 1,
+                "firstName": "George",
+                "lastName": "Franklin",
+                "address": "110 W. Liberty St.",
+                "city": "Madison",
+                "telephone": "6085551023",
+                "pets": [
+                  {
+                    "id": 1,
+                    "name": "Leo",
+                    "birthDate": "2010-09-07",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 2,
+                "firstName": "Betty",
+                "lastName": "Davis",
+                "address": "638 Cardinal Ave.",
+                "city": "Sun Prairie",
+                "telephone": "6085551749",
+                "pets": [
+                  {
+                    "id": 2,
+                    "name": "Basil",
+                    "birthDate": "2012-08-06",
+                    "type": {
+                      "id": 6,
+                      "name": "hamster"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 3,
+                "firstName": "Eduardo",
+                "lastName": "Rodriquez",
+                "address": "2693 Commerce St.",
+                "city": "McFarland",
+                "telephone": "6085558763",
+                "pets": [
+                  {
+                    "id": 4,
+                    "name": "Jewel",
+                    "birthDate": "2010-03-07",
+                    "type": {
+                      "id": 2,
+                      "name": "dog"
+                    }
+                  },
+                  {
+                    "id": 3,
+                    "name": "Rosy",
+                    "birthDate": "2011-04-17",
+                    "type": {
+                      "id": 2,
+                      "name": "dog"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 4,
+                "firstName": "Harold",
+                "lastName": "Davis",
+                "address": "563 Friendly St.",
+                "city": "Windsor",
+                "telephone": "6085553198",
+                "pets": [
+                  {
+                    "id": 5,
+                    "name": "Iggy",
+                    "birthDate": "2010-11-30",
+                    "type": {
+                      "id": 3,
+                      "name": "lizard"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 5,
+                "firstName": "Peter",
+                "lastName": "McTavish",
+                "address": "2387 S. Fair Way",
+                "city": "Madison",
+                "telephone": "6085552765",
+                "pets": [
+                  {
+                    "id": 6,
+                    "name": "George",
+                    "birthDate": "2010-01-20",
+                    "type": {
+                      "id": 4,
+                      "name": "snake"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 6,
+                "firstName": "Jean",
+                "lastName": "Coleman",
+                "address": "105 N. Lake St.",
+                "city": "Monona",
+                "telephone": "6085552654",
+                "pets": [
+                  {
+                    "id": 8,
+                    "name": "Max",
+                    "birthDate": "2012-09-04",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  },
+                  {
+                    "id": 7,
+                    "name": "Samantha",
+                    "birthDate": "2012-09-04",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 7,
+                "firstName": "Jeff",
+                "lastName": "Black",
+                "address": "1450 Oak Blvd.",
+                "city": "Monona",
+                "telephone": "6085555387",
+                "pets": [
+                  {
+                    "id": 9,
+                    "name": "Lucky",
+                    "birthDate": "2011-08-06",
+                    "type": {
+                      "id": 5,
+                      "name": "bird"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 8,
+                "firstName": "Maria",
+                "lastName": "Escobito",
+                "address": "345 Maple St.",
+                "city": "Madison",
+                "telephone": "6085557683",
+                "pets": [
+                  {
+                    "id": 10,
+                    "name": "Mulligan",
+                    "birthDate": "2007-02-24",
+                    "type": {
+                      "id": 2,
+                      "name": "dog"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 9,
+                "firstName": "David",
+                "lastName": "Schroeder",
+                "address": "2749 Blackhawk Trail",
+                "city": "Madison",
+                "telephone": "6085559435",
+                "pets": [
+                  {
+                    "id": 11,
+                    "name": "Freddy",
+                    "birthDate": "2010-03-09",
+                    "type": {
+                      "id": 5,
+                      "name": "bird"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": 10,
+                "firstName": "Carlos",
+                "lastName": "Estaban",
+                "address": "2335 Independence La.",
+                "city": "Waunakee",
+                "telephone": "6085555487",
+                "pets": [
+                  {
+                    "id": 12,
+                    "name": "Lucky",
+                    "birthDate": "2010-06-24",
+                    "type": {
+                      "id": 2,
+                      "name": "dog"
+                    }
+                  },
+                  {
+                    "id": 13,
+                    "name": "Sly",
+                    "birthDate": "2012-06-08",
+                    "type": {
+                      "id": 1,
+                      "name": "cat"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "start": "2023-04-18T18:08:56.902414",
+          "status": "succeeded",
+          "end": "2023-04-18T18:08:56.923465",
+          "duration": 0.021051,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "type": "probe",
+            "name": "we-can-retrieve-owner-by-id-data",
+            "tolerance": 200,
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:54494/owners/retryExponential/1"
+            }
+          },
+          "output": {
+            "status": 200,
+            "headers": {
+              "Content-Type": "application/json",
+              "Transfer-Encoding": "chunked",
+              "Date": "Tue, 18 Apr 2023 18:08:56 GMT",
               "Keep-Alive": "timeout=60",
               "Connection": "keep-alive"
             },
@@ -187,10 +683,10 @@
               ]
             }
           },
-          "start": "2023-04-11T20:07:22.051350",
+          "start": "2023-04-18T18:08:56.924463",
           "status": "succeeded",
-          "end": "2023-04-11T20:07:22.058344",
-          "duration": 0.006994,
+          "end": "2023-04-18T18:08:56.931466",
+          "duration": 0.007003,
           "tolerance_met": true
         }
       ]
@@ -203,7 +699,7 @@
         "name": "enable_chaosmonkey",
         "provider": {
           "arguments": {
-            "base_url": "http://localhost:54348/actuator"
+            "base_url": "http://localhost:54494/actuator"
           },
           "func": "enable_chaosmonkey",
           "module": "chaosspring.actions",
@@ -211,24 +707,24 @@
         },
         "type": "action"
       },
-      "output": "{\"enabledAt\":\"2023-04-10T22:32:32.575+02:00\",\"enabledFor\":{\"raw\":\"PT23H34M49.279S\",\"formatted\":\"23 hours 34 minutes 49 seconds\"},\"enabled\":true}",
-      "start": "2023-04-11T20:07:21.844646",
+      "output": "{\"enabledAt\":\"2023-04-18T19:24:54.175+02:00\",\"enabledFor\":{\"raw\":\"PT44M2.702S\",\"formatted\":\"44 minutes 02 seconds\"},\"enabled\":true}",
+      "start": "2023-04-18T18:08:56.869036",
       "status": "succeeded",
-      "end": "2023-04-11T20:07:21.973842",
-      "duration": 0.129196
+      "end": "2023-04-18T18:08:56.881046",
+      "duration": 0.01201
     },
     {
       "activity": {
         "name": "configure_assaults",
         "provider": {
           "arguments": {
-            "base_url": "http://localhost:54348/actuator",
+            "base_url": "http://localhost:54494/actuator",
             "assaults_configuration": {
-              "level": 1,
+              "level": 5,
               "deterministic": true,
-              "latencyRangeStart": 500,
-              "latencyRangeEnd": 5000,
-              "latencyActive": true,
+              "latencyRangeStart": 200,
+              "latencyRangeEnd": 500,
+              "latencyActive": false,
               "exceptionsActive": true,
               "killApplicationActive": true,
               "exception": {
@@ -249,10 +745,10 @@
         "type": "action"
       },
       "output": "Assault config has changed",
-      "start": "2023-04-11T20:07:21.974796",
+      "start": "2023-04-18T18:08:56.884299",
       "status": "succeeded",
-      "end": "2023-04-11T20:07:22.034341",
-      "duration": 0.059545
+      "end": "2023-04-18T18:08:56.891415",
+      "duration": 0.007116
     },
     {
       "activity": {
@@ -260,14 +756,14 @@
         "tolerance": 200,
         "provider": {
           "type": "http",
-          "url": "http://localhost:54348/actuator/chaosmonkey/watchers",
+          "url": "http://localhost:54494/actuator/chaosmonkey/watchers",
           "method": "POST",
           "headers": {
             "Content-Type": "application/json"
           },
           "arguments": {
             "controller": false,
-            "restController": false,
+            "restController": true,
             "service": true,
             "repository": false,
             "component": false
@@ -280,19 +776,19 @@
         "headers": {
           "Content-Type": "text/plain;charset=UTF-8",
           "Content-Length": "26",
-          "Date": "Tue, 11 Apr 2023 20:07:21 GMT",
+          "Date": "Tue, 18 Apr 2023 18:08:56 GMT",
           "Keep-Alive": "timeout=60",
           "Connection": "keep-alive"
         },
         "body": "Watcher config has changed"
       },
-      "start": "2023-04-11T20:07:22.036341",
+      "start": "2023-04-18T18:08:56.892414",
       "status": "succeeded",
-      "end": "2023-04-11T20:07:22.049338",
-      "duration": 0.012997
+      "end": "2023-04-18T18:08:56.899415",
+      "duration": 0.007001
     }
   ],
   "rollbacks": [],
-  "end": "2023-04-11T20:07:22.061343",
-  "duration": 0.25611352920532227
+  "end": "2023-04-18T18:08:56.934462",
+  "duration": 1.4395732879638672
 }

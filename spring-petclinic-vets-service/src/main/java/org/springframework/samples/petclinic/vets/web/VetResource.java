@@ -15,16 +15,29 @@
  */
 package org.springframework.samples.petclinic.vets.web;
 
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
+import org.springframework.samples.petclinic.vets.dto.Studies;
+import org.springframework.samples.petclinic.vets.dto.VetDetails;
+import org.springframework.samples.petclinic.vets.dto.Vets;
 import org.springframework.samples.petclinic.vets.model.Vet;
 import org.springframework.samples.petclinic.vets.model.VetRepository;
+import org.springframework.samples.petclinic.vets.services.StudyService;
+import org.springframework.samples.petclinic.vets.services.VetsServiceClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 /**
  * @author Juergen Hoeller
@@ -40,9 +53,31 @@ class VetResource {
 
     private final VetRepository vetRepository;
 
+    private final StudyService studyService;
+
+    private final VetsServiceClient vetsServiceClient;
+
     @GetMapping
     @Cacheable("vets")
     public List<Vet> showResourcesVetList() {
         return vetRepository.findAll();
+    }
+
+    @GetMapping(value = "/{vetId}")
+    public Optional<Vet> getVetDetailsById(@PathVariable("vetId") @Min(1) int vetId){
+        return vetRepository.findById(vetId);
+    }
+
+
+
+    private Function<Studies, VetDetails> addStudiesToVet(VetDetails vet) {
+
+        return studies -> {
+            vet.getStudyDetailsList()
+                .addAll(studies.getItems().stream()
+                    .filter(v -> v.getVetId() == vet.getId())
+                    .toList());
+            return vet;
+        };
     }
 }

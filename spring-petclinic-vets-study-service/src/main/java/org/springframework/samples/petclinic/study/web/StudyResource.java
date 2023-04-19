@@ -62,6 +62,12 @@ class StudyResource {
     public Optional<StudyRecord> findById(@PathVariable("studyRecordId") @Min(1) int studyRecordId) {
         return studyRepository.findById(studyRecordId);
     }
+
+    @GetMapping(value = "vets/{vetId}")
+    public List<StudyRecord> findByVetsId(@PathVariable("vetId") @Min(1) int vetId) {
+        return studyRepository.findByVetId(vetId);
+    }
+
     public String fallbackAfterRetry(Exception ex) {
         return "all retries have exhausted";
     }

@@ -1,0 +1,98 @@
+{
+  "version": "1.0.0",
+  "title": "Get Owners when database is down",
+  "description": "N/A",
+  "tags": [],
+  "steady-state-hypothesis": {
+    "title": "Owner data is available",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "timeout": 50,
+          "url": "http://localhost:54494/owners"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owner-by-id-data",
+        "tolerance": 200,
+        "provider": {
+          "type": "http",
+          "timeout": 50,
+          "url": "http://localhost:54494/owners/retryExponential/1"
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "name": "enable_chaosmonkey",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:54494/actuator"
+        },
+        "func": "enable_chaosmonkey",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_assaults",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:54494/actuator",
+          "assaults_configuration": {
+            "level": 1,
+            "deterministic": false,
+            "latencyRangeStart": 1000,
+            "latencyRangeEnd": 2000,
+            "latencyActive": true,
+            "exceptionsActive": true,
+            "killApplicationActive": true,
+            "exception": {
+              "type": "java.net.ConnectException",
+              "arguments": [
+                {
+                  "className": "java.lang.String",
+                  "value": "Connection timed out"
+                }
+              ]
+            }
+          }
+        },
+        "func": "change_assaults_configuration",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_repository_watcher",
+      "tolerance": 200,
+      "provider": {
+        "type": "http",
+        "url": "http://localhost:54494/actuator/chaosmonkey/watchers",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "arguments": {
+          "controller": false,
+          "restController": true,
+          "service": true,
+          "repository": false,
+          "component": false
+        }
+      },
+      "type": "action"
+    }
+  ],
+  "rollbacks": [
+
+  ]
+}
