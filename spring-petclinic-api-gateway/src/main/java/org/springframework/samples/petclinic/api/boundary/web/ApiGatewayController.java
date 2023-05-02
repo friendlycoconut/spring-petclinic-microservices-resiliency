@@ -15,7 +15,11 @@
  */
 package org.springframework.samples.petclinic.api.boundary.web;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
 import org.springframework.samples.petclinic.api.application.CustomersServiceClient;
@@ -30,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author Maciej Szarlinski
@@ -43,7 +48,15 @@ public class ApiGatewayController {
 
     private final VisitsServiceClient visitsServiceClient;
 
+    @Autowired
     private final ReactiveCircuitBreakerFactory cbFactory;
+
+    private final CircuitBreakerConfig config = CircuitBreakerConfig
+        .custom()
+        .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
+        .slidingWindowSize(3)
+        .failureRateThreshold(20.0f)
+        .build();
 
     @GetMapping(value = "owners/{ownerId}")
     public Mono<OwnerDetails> getOwnerDetails(final @PathVariable int ownerId) {
@@ -59,9 +72,42 @@ public class ApiGatewayController {
 
     }
 
+    @GetMapping(value = "owners/experiment/{ownerId}")
+    public Mono<OwnerDetails> getOwnerDetailsExperiment(final @PathVariable int ownerId) {
+        return customersServiceClient.getOwnerExperiment(ownerId)
+            .flatMap(owner ->
+                visitsServiceClient.getVisitsForPets(owner.getPetIds())
+                    .map(addVisitsToOwner(owner))
+            );
+    }
+
+    @GetMapping(value = "owners/experiment2/{ownerId}")
+    public Mono<OwnerDetails> getOwnerDetailsExperiment2(final @PathVariable int ownerId) {
+        return customersServiceClient.getOwnerExperiment2(ownerId)
+            .flatMap(owner ->
+                visitsServiceClient.getVisitsForPets(owner.getPetIds())
+                    .map(addVisitsToOwner(owner))
+            );
+    }
+
+    @GetMapping(value = "owners/experiment3/{ownerId}")
+    public Mono<OwnerDetails> getOwnerDetailsExperiment3(final @PathVariable int ownerId) {
+        return customersServiceClient.getOwnerExperiment3(ownerId)
+            .flatMap(owner ->
+                visitsServiceClient.getVisitsForPets(owner.getPetIds())
+                    .map(addVisitsToOwner(owner))
+            );
+    }
+
     @GetMapping(value = "owners/*/pets/{petId}")
     public Mono<PetDetails> getPetDetails(final @PathVariable int petId) {
-        return customersServiceClient.getPetById(petId)
+        CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config);
+        CircuitBreaker circuitBreaker = registry.circuitBreaker("ownerPetService");
+
+        Supplier<Mono<PetDetails>> petDetailsSupplier = circuitBreaker.decorateSupplier(() -> customersServiceClient.getPetById(petId));
+
+
+        return petDetailsSupplier.get()
             .flatMap(pet ->
                             visitsServiceClient.getVisitsForOnePet(pet.getId())
             .map(addVisitToPet(pet)));
@@ -92,5 +138,13 @@ public class ApiGatewayController {
 
     private Mono<Visits> emptyVisitsForPets() {
         return Mono.just(new Visits());
+    }
+
+    private Mono<OwnerDetails> emptyOwnerDetails() {
+        return Mono.just(new OwnerDetails());
+    }
+
+    private void decorateOwnerPets(){
+
     }
 }

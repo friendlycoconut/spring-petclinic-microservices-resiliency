@@ -1,0 +1,81 @@
+{
+  "version": "1.0.0",
+  "title": "Get owners with delay and exception without any patterns",
+  "description": "N/A",
+  "tags": [],
+  "steady-state-hypothesis": {
+    "title": "Get all owners is available",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owner-by-id-data",
+        "tolerance": [500],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8080/api/gateway/owners/experiment2/1"
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "name": "enable_chaosmonkey",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:8080/actuator"
+        },
+        "func": "enable_chaosmonkey",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_assaults",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:8080/actuator",
+          "assaults_configuration": {
+            "level": 2,
+            "deterministic": false,
+            "latencyRangeStart": 5000,
+            "latencyRangeEnd": 5000,
+            "latencyActive": true,
+            "exceptionsActive": false,
+            "killApplicationActive": false
+
+
+          }
+        },
+        "func": "change_assaults_configuration",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_repository_watcher",
+      "tolerance": 200,
+      "provider": {
+        "type": "http",
+        "url": "http://localhost:8080/actuator/chaosmonkey/watchers",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "arguments": {
+          "controller": false,
+          "restController": true,
+          "service": true,
+          "repository": false,
+          "component": false
+        }
+      },
+      "type": "action"
+    }
+  ],
+  "rollbacks": [
+
+  ]
+}

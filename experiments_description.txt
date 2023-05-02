@@ -1,0 +1,304 @@
+----------------------------------------------------------------
+1. Experiment
+----------------------------------------------------------------
+
+-Initial hypothesis:
+
+In the hypothesis for this experiment was decided to use one endpoint:
+
+http://localhost:xxxxx/owners and http://localhost:xxxxx/owners/1.
+Port for the customers-service is set dynamically. This hypothesis defines that we can get information for
+all owners and information for one owner.
+
+Watcher: service, resource.
+
+"steady-state-hypothesis": {
+    "title": "Get all owners is available",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data",
+        "tolerance": [200,500],
+        "provider": {
+          "type": "http",
+          "timeout": 7,
+          "url": "http://localhost:62036/owners"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owner-by-id-data",
+        "tolerance": [200,500],
+        "provider": {
+          "type": "http",
+          "timeout": 7,
+          "url": "http://localhost:62036/owners/1"
+        }
+      }
+    ]
+  }
+
+- Assaults
+
+As a main assault was decided to latency with the Exception calls.
+Deterministic parameter was set as false, to make these assaults stochastic.
+Faults parameters were set as:
+
+"assaults_configuration": {
+            "level": 2,
+            "deterministic": false,
+            "latencyRangeStart": 5000,
+            "latencyRangeEnd": 5000,
+            "latencyActive": true,
+            "exceptionsActive": true,
+            "killApplicationActive": false,
+            "exception": {
+              "type": "java.net.ConnectException",
+              "arguments": [
+                {
+                  "className": "java.lang.String",
+                  "value": "Connection timed out"
+                }
+              ]
+            }
+          }
+
+Exactly that means that for each second response stochastically will be added latency
+ will be added latency with 5000ms and Chaos exception.
+
+- Implemented patterns
+
+For this pattern wasn't implemented eny pattern
+
+- Results
+
+For successful run og this experiment was set a tolerance level as:
+tolerance: [200,500]. THat means, that we can receive both 200 (OK) response as
+500 (Server exception) response.
+
+As a result was received the next response:
+
+[INFO] Steady state hypothesis is met!
+[INFO] Let's rollback...
+[INFO] No declared rollbacks, let's move on.
+[INFO] Experiment ended with status: completed
+
+In case of removal value "500" from tolerance level we will receive:
+
+[INFO] Probe: we-can-retrieve-owners-data
+[CRITICAL] Steady state probe 'we-can-retrieve-owners-data' is not in the given tolerance so failing this experiment
+[INFO] Experiment ended with status: deviated
+[INFO] The steady-state has deviated, a weakness may have been discovered
+
+----------------------------------------------------------------
+2. Experiment - Owners - Retry patterns
+----------------------------------------------------------------
+
+-Initial hypothesis:
+
+In the hypothesis for this experiment was decided to use same endpoint:
+
+http://localhost:xxxxx/owners and http://localhost:xxxxx/owners/1.
+Port for the customers-service is set dynamically. This hypothesis defines that we can get information for
+all owners and information for one owner.
+
+Main change - in changed tolerance level.
+ "tolerance": [200].
+
+ Watcher: service.
+
+- Assaults
+
+As a main assault was decided to latency with the Exception calls.
+Deterministic parameter was set as false, to make these assaults stochastic.
+Parameters were taken as the same from the previous example.
+
+- Implemented patterns
+
+To deal with the exceptions of the customers-service was implemented Resilience4j Retry pattern.
+Initial parameters are set as:
+
+resilience4j.retry.instances.retryExp2.max-attempts=3
+resilience4j.retry.instances.retryExp2.wait-duration=1s
+resilience4j.retry.instances.retryExp2.retry-exceptions=java.lang.Exception
+
+As a result was logged:
+    INFO 4728 --- [o-auto-1-exec-8] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+    INFO 4728 --- [o-auto-1-exec-8] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+    INFO 4728 --- [o-auto-1-exec-8] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+    Retry exception
+
+That means that for the current Exception calls number and for 3 retries were called 3 Chaos Monkey exceptions.
+
+Therefore, the parameter of max-attempts was set as 5 attempts and
+waiting duration was increase to 2 seconds.
+
+resilience4j.retry.instances.retryExp2.max-attempts=5
+resilience4j.retry.instances.retryExp2.wait-duration=2s
+resilience4j.retry.instances.retryExp2.retry-exceptions=java.lang.Exception
+
+  INFO 11576 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+  INFO 11576 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+  INFO 11576 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+  INFO 11576 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+ Making a request to owner-service (id)  at :2023-04-24T15:52:39.687251
+
+That means, that the Exception issue was solved with the help of the Retry pattern.
+
+
+  - Results
+
+[2023-04-24 15:49:42 INFO] Validating the experiment's syntax
+[2023-04-24 15:49:42 INFO] Experiment looks valid
+[2023-04-24 15:49:43 INFO] Running experiment: Get owners with delay and exception without any patterns
+[2023-04-24 15:49:43 INFO] Steady-state strategy: default
+[2023-04-24 15:49:43 INFO] Rollbacks strategy: default
+[2023-04-24 15:49:43 INFO] Steady state hypothesis: Get all owners is available
+[2023-04-24 15:49:43 INFO] Probe: we-can-retrieve-owners-data
+[2023-04-24 15:49:47 INFO] Probe: we-can-retrieve-owner-by-id-data
+[2023-04-24 15:49:55 INFO] Steady state hypothesis is met!
+[2023-04-24 15:49:55 INFO] Playing your experiment's method now...
+[2023-04-24 15:49:55 INFO] Action: configure_assaults
+[2023-04-24 15:49:55 INFO] Action: configure_repository_watcher
+[2023-04-24 15:49:55 INFO] Steady state hypothesis: Get all owners is available
+[2023-04-24 15:49:55 INFO] Probe: we-can-retrieve-owners-data
+[2023-04-24 15:49:57 INFO] Probe: we-can-retrieve-owner-by-id-data
+[2023-04-24 15:49:57 INFO] Steady state hypothesis is met!
+[2023-04-24 15:49:57 INFO] Let's rollback...
+[2023-04-24 15:56:15 INFO] Action: enable_chaosmonkey
+[2023-04-24 15:56:15 INFO] Action: configure_assaults
+[2023-04-24 15:56:15 INFO] Action: configure_repository_watcher
+[2023-04-24 15:56:15 INFO] Steady state hypothesis: Get all owners is available
+[2023-04-24 15:56:15 INFO] Probe: we-can-retrieve-owners-data
+[2023-04-24 15:56:19 INFO] Probe: we-can-retrieve-owner-by-id-data
+[2023-04-24 15:56:21 INFO] Steady state hypothesis is met!
+[2023-04-24 15:56:21 INFO] Let's rollback...
+[2023-04-24 15:56:21 INFO] No declared rollbacks, let's move on.
+[2023-04-24 15:56:21 INFO] Experiment ended with status: completed
+
+----------------------------------------------------------------
+3. Experiment - Api Gateway - Calling customer-service dependent - Retry pattern
+----------------------------------------------------------------
+
+- Initial hypothesis:
+
+In this experiment is going to be tested call of the dependent customer-service endpoint,
+in the api gateway service with already implemented Retry pattern from previous experiment and
+with the further improvement of this pattern.
+
+Watcher: service.
+
+  "steady-state-hypothesis": {
+    "title": "Api gateway service gets owner by id",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data-api-gateway",
+        "tolerance": [200],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8080/api/gateway/owners/1"
+        }
+      }
+    ]
+  }
+
+-  Assaults
+
+For this experiment were changed delay parameters:
+ "level": 3,
+            "deterministic": false,
+            "latencyRangeStart": 2000,
+            "latencyRangeEnd": 6000,
+            "latencyActive": true,
+            "exceptionsActive": true,
+            "killApplicationActive": false
+
+- Implemented patterns
+
+At the beginning of the experiment testing were used same parameter as from the previous experiment.
+
+As a result of call the customer-service owner/1 endpoint via Api gateway service endpoint was received next stacktrace:
+
+INFO 5020 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+INFO 5020 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+INFO 5020 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+INFO 5020 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+INFO 5020 --- [o-auto-1-exec-9] d.c.s.b.c.m.assaults.ExceptionAssault    : Chaos Monkey - exception
+ERROR 5020 --- [o-auto-1-exec-9] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.lang.IllegalArgumentException: Name must not be null] with root cause
+
+That means, that we need to receive some another response from customer-service rather than Exception.
+As a result to the Retry pattern annotation was added the fallbackMethod argument, that helps to manage the exception,
+in case all retries have been made.
+
+    @Retry(name = "retryExp1", fallbackMethod = "getDefaultLoansGetOwnerId")
+
+As a result of this change, in the call from api gateway endpoint http://localhost:8080/api/gateway/owners/1 was received
+a default Owner object, that could be replaced by a cached one.
+{
+"id": 0,
+"firstName": null,
+"lastName": null,
+"address": null,
+"city": null,
+"telephone": null,
+"pets": []
+}.
+
+Also, due to the changes of the Retry parameters, was decided to use the Exponential backoff of the retry pattern.
+Parameters of the retry pattern are:
+
+resilience4j.retry.instances.retryExp3.max-attempts=3
+resilience4j.retry.instances.retryExp3.wait-duration=1s
+resilience4j.retry.instances.retryExp3.enableExponentialBackoff= true
+resilience4j.retry.instances.retryExp3.exponentialBackoffMultiplier= 2
+
+
+In this method, the wait time increases exponentially between attempts because of the multiplier.
+For our example, if we specified an initial wait time of 3s and a multiplier of 2,
+the retries would be done after 1s, 3s, 6s, 12s  and so on.
+This method is a recommended approach when the client is a background job or a daemon.
+
+Result is displayed in the actuator/retryevents endpoint:
+{
+      "retryName": "retryExp3",
+      "type": "RETRY",
+      "creationTime": "2023-04-24T22:22:19.084239900+02:00[Europe/Berlin]",
+      "errorMessage": "java.lang.IllegalArgumentException: Name must not be null",
+      "numberOfAttempts": 1
+    },
+    {
+      "retryName": "retryExp3",
+      "type": "RETRY",
+      "creationTime": "2023-04-24T22:22:21.097911500+02:00[Europe/Berlin]",
+      "errorMessage": "java.lang.IllegalArgumentException: Name must not be null",
+      "numberOfAttempts": 2
+    },
+    {
+      "retryName": "retryExp3",
+      "type": "RETRY",
+      "creationTime": "2023-04-24T22:22:23.113563100+02:00[Europe/Berlin]",
+      "errorMessage": "java.lang.IllegalArgumentException: Name must not be null",
+      "numberOfAttempts": 3
+    },
+    {
+      "retryName": "retryExp3",
+      "type": "OK",
+      "creationTime": "2023-04-24T22:22:25.117214600+02:00[Europe/Berlin]",
+      "numberOfAttempts": 4
+    },
+
+
+- Result
+
+Result of calling Api gateway endpoint:
+
+[2023-04-24 22:22:27 INFO] Experiment ended with status: completed
+
+
+
+
+
+
+

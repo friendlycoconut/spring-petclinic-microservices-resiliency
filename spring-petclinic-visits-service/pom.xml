@@ -20,6 +20,10 @@
     </properties>
 
 	<dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

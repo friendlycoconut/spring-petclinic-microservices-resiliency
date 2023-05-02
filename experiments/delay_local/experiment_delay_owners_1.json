@@ -1,29 +1,29 @@
 {
   "version": "1.0.0",
-  "title": "Get Players when database is down",
+  "title": "Get owners with delay and exception without any patterns",
   "description": "N/A",
   "tags": [],
   "steady-state-hypothesis": {
-    "title": "Player data is available",
+    "title": "Get all owners is available",
     "probes": [
       {
         "type": "probe",
         "name": "we-can-retrieve-owners-data",
-        "tolerance": 200,
+        "tolerance": [200,500],
         "provider": {
           "type": "http",
-          "timeout": 50,
-          "url": "http://localhost:54494/owners"
+
+          "url": "http://localhost:59020/owners/experiment4/1"
         }
       },
       {
         "type": "probe",
         "name": "we-can-retrieve-owner-by-id-data",
-        "tolerance": 200,
+        "tolerance": [200,500],
         "provider": {
           "type": "http",
-          "timeout": 50,
-          "url": "http://localhost:54494/owners/1"
+
+          "url": "http://localhost:59020/owners/1"
         }
       }
     ]
@@ -33,7 +33,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:54494/actuator"
+          "base_url": "http://localhost:59020/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -45,15 +45,15 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:54494/actuator",
+          "base_url": "http://localhost:59020/actuator",
           "assaults_configuration": {
-            "level": 1,
+            "level": 2,
             "deterministic": false,
-            "latencyRangeStart": 1000,
-            "latencyRangeEnd": 3000,
+            "latencyRangeStart": 5000,
+            "latencyRangeEnd": 5000,
             "latencyActive": true,
-            "exceptionsActive": true,
-            "killApplicationActive": true,
+            "exceptionsActive": false,
+            "killApplicationActive": false,
             "exception": {
               "type": "java.net.ConnectException",
               "arguments": [
@@ -76,7 +76,7 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:54494/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:59020/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"

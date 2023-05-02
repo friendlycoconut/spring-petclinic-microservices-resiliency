@@ -35,10 +35,16 @@ spring:
     activate:
       on-profile: docker
     import: configserver:http://config-server:8888
+management:
+
+  endpoints:
+      web:
+        exposure:
+          include: "*"
 
 resilience4j:
-  retry:
+  timelimiter:
     instances:
-      myRetry:
-        max-attempts: 7
-        wait-duration: 1s
+      timeLimiterExp2:
+        timeout-duration: "3s"
+

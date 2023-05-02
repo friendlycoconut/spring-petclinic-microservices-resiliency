@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.api.application;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.samples.petclinic.api.dto.OwnerDetails;
 import org.springframework.samples.petclinic.api.dto.PetDetails;
@@ -44,4 +45,29 @@ public class CustomersServiceClient {
             .retrieve()
             .bodyToMono(PetDetails.class);
     }
+
+
+    public Mono<OwnerDetails> getOwnerExperiment(final int ownerId) {
+        return webClientBuilder.build().get()
+            .uri("http://customers-service/owners/experiment/{ownerId}", ownerId)
+            .retrieve()
+            .bodyToMono(OwnerDetails.class);
+    }
+
+    public Mono<OwnerDetails> getOwnerExperiment2(final int ownerId) {
+        return webClientBuilder.build().get()
+            .uri("http://customers-service/owners/experiment2/{ownerId}", ownerId)
+            .retrieve()
+            .bodyToMono(OwnerDetails.class);
+    }
+
+    @Retry(name = "retryExp3Delay")
+    public Mono<OwnerDetails> getOwnerExperiment3(final int ownerId) {
+        return webClientBuilder.build().get()
+            .uri("http://customers-service/owners/experiment3/{ownerId}", ownerId)
+            .retrieve()
+            .bodyToMono(OwnerDetails.class);
+    }
+
+
 }

@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "title": "Get owners with delay and exception without any patterns",
+  "description": "N/A",
+  "tags": [],
+  "steady-state-hypothesis": {
+    "title": "Api gateway service gets owner by id",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data-api-gateway",
+        "tolerance": [200],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8080/api/gateway/owners/1"
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "name": "enable_chaosmonkey",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:8080/actuator"
+        },
+        "func": "enable_chaosmonkey",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_assaults",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:8080/actuator",
+          "assaults_configuration": {
+            "level": 3,
+            "deterministic": false,
+            "latencyRangeStart": 2000,
+            "latencyRangeEnd": 6000,
+            "latencyActive": true,
+            "exceptionsActive": true,
+            "killApplicationActive": false
+
+          }
+        },
+        "func": "change_assaults_configuration",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_repository_watcher",
+      "tolerance": 200,
+      "provider": {
+        "type": "http",
+        "url": "http://localhost:8080/actuator/chaosmonkey/watchers",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "arguments": {
+          "controller": false,
+          "restController": false,
+          "service": true,
+          "repository": false,
+          "component": false
+        }
+      },
+      "type": "action"
+    }
+  ],
+  "rollbacks": [
+
+  ]
+}

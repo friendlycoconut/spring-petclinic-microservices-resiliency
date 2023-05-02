@@ -27,7 +27,7 @@ do
 key="$1"
 case $1 in
     customers)
-        PORT=54494
+        PORT=62036
         ;;
     visits)
         PORT=8082

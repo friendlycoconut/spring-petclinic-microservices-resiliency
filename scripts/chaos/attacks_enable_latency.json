@@ -1,5 +1,7 @@
 {
     "latencyActive": true,
-    "latencyRangeStart" : 1000,
-    "latencyRangeEnd" : 2000
+    "latencyRangeStart" : 5000,
+    "latencyRangeEnd" : 5000,
+    "level" : 2,
+    "deterministic": true
 }
