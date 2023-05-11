@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.visits.web;
 import java.util.List;
 import java.util.function.Function;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 
@@ -71,8 +72,8 @@ class VisitResource {
     }
 
     @GetMapping("owners/*/pets/{petId}/visits")
+    @Retry(name = "retryApi", fallbackMethod = "fallbackAfterRetry")
     public List<Visit> read(@PathVariable("petId") @Min(1) int petId) {
-
         return visitRepository.findByPetId(petId);
     }
 

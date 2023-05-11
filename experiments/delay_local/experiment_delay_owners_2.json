@@ -13,17 +13,7 @@
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:50105/owners"
-        }
-      },
-      {
-        "type": "probe",
-        "name": "we-can-retrieve-owner-by-id-data",
-        "tolerance": [200,500],
-        "provider": {
-          "type": "http",
-
-          "url": "http://localhost:50105/owners/experiment2/1"
+          "url": "http://localhost:8081/owners/experiment2/1"
         }
       }
     ]
@@ -33,7 +23,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:50105/actuator"
+          "base_url": "http://localhost:8081/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -45,7 +35,7 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:50105/actuator",
+          "base_url": "http://localhost:8081/actuator",
           "assaults_configuration": {
             "level": 2,
             "deterministic": false,
@@ -76,14 +66,14 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:50105/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:8081/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"
         },
         "arguments": {
           "controller": false,
-          "restController": false,
+          "restController": true,
           "service": true,
           "repository": false,
           "component": false

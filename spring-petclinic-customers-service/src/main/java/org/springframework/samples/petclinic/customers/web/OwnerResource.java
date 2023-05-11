@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -164,6 +165,83 @@ class OwnerResource {
         return getStringFromOwnersJob(ownerId);
     }
 
+    @TimeLimiter(name = "timeLimiterExp2_1")
+    @GetMapping(value="experiment2_1/{ownerId}")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment2_1(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+    @TimeLimiter(name = "timeLimiterExp2_2")
+    @GetMapping(value="experiment2_2/{ownerId}")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment2_2(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+    @TimeLimiter(name = "timeLimiterExp2_3")
+    @GetMapping(value="experiment2_3/{ownerId}")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment2_3(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+    @TimeLimiter(name = "timeLimiterExp2_4")
+    @GetMapping(value="experiment2_4/{ownerId}")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment2_4(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+    @TimeLimiter(name = "timeLimiterExp2_5")
+    @GetMapping(value="experiment2_5/{ownerId}")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment2_5(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @TimeLimiter(name = "timeLimiterExp2_6")
+    @GetMapping(value="experiment2_6/{ownerId}")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment2_6(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
     @TimeLimiter(name = "timeLimiterExp2")
     @GetMapping(value="experiment2/{ownerId}")
     public CompletableFuture<Optional<Owner>> findOwnerExperiment2(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
@@ -175,7 +253,6 @@ class OwnerResource {
             }
         });
     }
-
 
     @GetMapping(value="experiment3/{ownerId}")
     public CompletableFuture<Optional<Owner>> findOwnerExperiment3(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
@@ -200,6 +277,58 @@ class OwnerResource {
         });
     }
 
+    @GetMapping(value="experiment5/{ownerId}")
+
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment5(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @GetMapping(value = "experiment8/{ownerId}")
+    @CircuitBreaker(name = "experiment8")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment8(@PathVariable("ownerId") @Min(1) int ownerId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+    @GetMapping(value = "experiment8_1/{ownerId}")
+    @CircuitBreaker(name = "experiment8_1")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment8_1(@PathVariable("ownerId") @Min(1) int ownerId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+    @GetMapping(value = "experiment8_2/{ownerId}")
+    @CircuitBreaker(name = "experiment8_2")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment8_2(@PathVariable("ownerId") @Min(1) int ownerId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJob(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+
 
 
 
@@ -209,7 +338,7 @@ class OwnerResource {
         Function<Integer, Optional<Owner>> ownerIdFn = getOwnerIdFn(intervalFn);
         ExecutorService executors = newFixedThreadPool(3);
 
-        List<Callable<Optional<Owner>>> tasks = nCopies(24, () -> ownerIdFn.apply(ownerId));
+        List<Callable<Optional<Owner>>> tasks = nCopies(50, () -> ownerIdFn.apply(ownerId));
 
         List<Future<Optional<Owner>>> future = executors.invokeAll(tasks);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -235,9 +364,9 @@ class OwnerResource {
 
 
 
-    private Function<Integer, String> getRetriableOwnerIdFn(IntervalFunction intervalFn) {
+    private Function<Integer, Optional<Owner>> getRetriableOwnerIdFn(IntervalFunction intervalFn) {
         RetryConfig retryConfig = RetryConfig.custom()
-            .maxAttempts(1)
+            .maxAttempts(5)
             .intervalFunction(intervalFn)
             .retryExceptions(Exception.class)
             .build();
@@ -246,16 +375,26 @@ class OwnerResource {
         return io.github.resilience4j.retry.Retry.decorateFunction(retry, id -> {
             threadLogs();
 
-            return ownersService.getOwnerById(id).toString();
+            return ownersService.getOwnerById(id);
         });
     }
 
     private Function<Integer, Optional<Owner>> getOwnerIdFn(IntervalFunction intervalFn) {
         return id -> {
             threadLogs();
+            return Optional.of(ownersService.getOwnerById(id).get());
+        };
+    }
+
+
+    private Function<Integer, Optional<Owner>> getOwnerIdFnExperiment3(IntervalFunction intervalFn) {
+        return id -> {
+            threadLogs();
             try {
-                return ownersService.getOwnerByIdExperiment4(id).get();
-            } catch (InterruptedException | ExecutionException e) {
+                return (ownersService.getOwnerByIdExperiment3(id).get());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             }
         };

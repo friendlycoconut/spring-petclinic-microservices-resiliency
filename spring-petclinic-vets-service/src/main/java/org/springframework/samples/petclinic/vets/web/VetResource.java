@@ -17,6 +17,8 @@ package org.springframework.samples.petclinic.vets.web;
 
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import io.github.resilience4j.retry.RetryRegistry;
+import io.github.resilience4j.retry.annotation.Retry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +59,14 @@ class VetResource {
 
     private final VetsServiceClient vetsServiceClient;
 
+    @Retry(name = "vetsRetry")
     @GetMapping
     @Cacheable("vets")
     public List<Vet> showResourcesVetList() {
         return vetRepository.findAll();
     }
 
+    @Retry(name = "vetsRetry")
     @GetMapping(value = "/{vetId}")
     public Optional<Vet> getVetDetailsById(@PathVariable("vetId") @Min(1) int vetId){
         return vetRepository.findById(vetId);

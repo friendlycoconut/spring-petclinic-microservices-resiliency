@@ -9,23 +9,14 @@
       {
         "type": "probe",
         "name": "we-can-retrieve-owners-data",
-        "tolerance": [200,500],
+        "tolerance": [200,500,503],
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:59020/owners/experiment/1"
-        }
-      },
-      {
-        "type": "probe",
-        "name": "we-can-retrieve-owner-by-id-data",
-        "tolerance": [200,500],
-        "provider": {
-          "type": "http",
-
-          "url": "http://localhost:59020/owners/1"
+          "url": "http://localhost:50934/owners"
         }
       }
+      
     ]
   },
   "method": [
@@ -33,7 +24,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:59020/actuator"
+          "base_url": "http://localhost:50934/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -45,14 +36,14 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:59020/actuator",
+          "base_url": "http://localhost:50934/actuator",
           "assaults_configuration": {
-            "level": 1,
+            "level": 2,
             "deterministic": false,
-            "latencyRangeStart": 5000,
-            "latencyRangeEnd": 5000,
-            "latencyActive": true,
-            "exceptionsActive": false,
+            "latencyRangeStart": 0,
+            "latencyRangeEnd": 0,
+            "latencyActive": false,
+            "exceptionsActive": true,
             "killApplicationActive": false,
             "exception": {
               "type": "java.net.ConnectException",
@@ -76,7 +67,7 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:59020/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:50934/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"

@@ -9,21 +9,21 @@
       {
         "type": "probe",
         "name": "we-can-retrieve-owners-data",
-        "tolerance": [200,500],
+        "tolerance": [200,500,503],
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:59020/owners/experiment4/1"
+          "url": "http://localhost:61518/owners/experiment5/1"
         }
       },
       {
         "type": "probe",
         "name": "we-can-retrieve-owner-by-id-data",
-        "tolerance": [200,500],
+        "tolerance": [200,500,503],
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:59020/owners/1"
+          "url": "http://localhost:61518/owners/1"
         }
       }
     ]
@@ -33,7 +33,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:59020/actuator"
+          "base_url": "http://localhost:61518/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -45,14 +45,14 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:59020/actuator",
+          "base_url": "http://localhost:61518/actuator",
           "assaults_configuration": {
-            "level": 2,
+            "level": 3,1
             "deterministic": false,
-            "latencyRangeStart": 5000,
-            "latencyRangeEnd": 5000,
-            "latencyActive": true,
-            "exceptionsActive": false,
+            "latencyRangeStart": 0,
+            "latencyRangeEnd": 0,
+            "latencyActive": false,
+            "exceptionsActive": true,
             "killApplicationActive": false,
             "exception": {
               "type": "java.net.ConnectException",
@@ -76,7 +76,7 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:59020/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:61518/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"

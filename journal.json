@@ -12,26 +12,41 @@
       "probes": [
         {
           "type": "probe",
-          "name": "we-can-retrieve-owners-data",
+          "name": "we-can-retrieve-owners-data-cb-1",
           "tolerance": [
             200,
-            500
+            500,
+            503
           ],
           "provider": {
             "type": "http",
-            "url": "http://localhost:59020/owners/experiment4/1"
+            "url": "http://localhost:51333/owners/experiment8/1"
           }
         },
         {
           "type": "probe",
-          "name": "we-can-retrieve-owner-by-id-data",
+          "name": "we-can-retrieve-owners-data-cb-1",
           "tolerance": [
             200,
-            500
+            500,
+            503
           ],
           "provider": {
             "type": "http",
-            "url": "http://localhost:59020/owners/1"
+            "url": "http://localhost:51333/owners/experiment8_2/1"
+          }
+        },
+        {
+          "type": "probe",
+          "name": "we-can-retrieve-owners-data-cb-1",
+          "tolerance": [
+            200,
+            500,
+            503
+          ],
+          "provider": {
+            "type": "http",
+            "url": "http://localhost:51333/owners/experiment8_2/1"
           }
         }
       ]
@@ -41,7 +56,7 @@
         "name": "enable_chaosmonkey",
         "provider": {
           "arguments": {
-            "base_url": "http://localhost:59020/actuator"
+            "base_url": "http://localhost:51333/actuator"
           },
           "func": "enable_chaosmonkey",
           "module": "chaosspring.actions",
@@ -53,14 +68,14 @@
         "name": "configure_assaults",
         "provider": {
           "arguments": {
-            "base_url": "http://localhost:59020/actuator",
+            "base_url": "http://localhost:51333/actuator",
             "assaults_configuration": {
               "level": 2,
               "deterministic": false,
               "latencyRangeStart": 5000,
-              "latencyRangeEnd": 5000,
+              "latencyRangeEnd": 7000,
               "latencyActive": true,
-              "exceptionsActive": false,
+              "exceptionsActive": true,
               "killApplicationActive": false,
               "exception": {
                 "type": "java.net.ConnectException",
@@ -84,7 +99,7 @@
         "tolerance": 200,
         "provider": {
           "type": "http",
-          "url": "http://localhost:59020/actuator/chaosmonkey/watchers",
+          "url": "http://localhost:51333/actuator/chaosmonkey/watchers",
           "method": "POST",
           "headers": {
             "Content-Type": "application/json"
@@ -103,7 +118,7 @@
     "rollbacks": [],
     "dry": null
   },
-  "start": "2023-05-02T11:31:56.614967",
+  "start": "2023-05-10T13:29:43.277093",
   "status": "completed",
   "deviated": false,
   "steady_states": {
@@ -113,83 +128,106 @@
         {
           "activity": {
             "type": "probe",
-            "name": "we-can-retrieve-owners-data",
+            "name": "we-can-retrieve-owners-data-cb-1",
             "tolerance": [
               200,
-              500
+              500,
+              503
             ],
             "provider": {
               "type": "http",
-              "url": "http://localhost:59020/owners/experiment4/1"
+              "url": "http://localhost:51333/owners/experiment8/1"
             }
           },
           "output": {
-            "status": 500,
+            "status": 503,
             "headers": {
               "Content-Type": "application/json",
               "Transfer-Encoding": "chunked",
-              "Date": "Tue, 02 May 2023 11:32:03 GMT",
+              "Date": "Wed, 10 May 2023 13:30:15 GMT",
               "Connection": "close"
             },
             "body": {
-              "timestamp": "2023-05-02T11:32:03.470+00:00",
-              "status": 500,
-              "error": "Internal Server Error",
-              "path": "/owners/experiment4/1"
+              "timestamp": "2023-05-10T13:30:15.512+00:00",
+              "status": 503,
+              "error": "Service Unavailable",
+              "path": "/owners/experiment8/1"
             }
           },
-          "start": "2023-05-02T11:31:56.618966",
+          "start": "2023-05-10T13:29:43.280092",
           "status": "succeeded",
-          "end": "2023-05-02T11:32:03.479246",
-          "duration": 6.86028,
+          "end": "2023-05-10T13:30:15.524231",
+          "duration": 32.244139,
           "tolerance_met": true
         },
         {
           "activity": {
             "type": "probe",
-            "name": "we-can-retrieve-owner-by-id-data",
+            "name": "we-can-retrieve-owners-data-cb-1",
             "tolerance": [
               200,
-              500
+              500,
+              503
             ],
             "provider": {
               "type": "http",
-              "url": "http://localhost:59020/owners/1"
+              "url": "http://localhost:51333/owners/experiment8_2/1"
             }
           },
           "output": {
-            "status": 200,
+            "status": 503,
             "headers": {
               "Content-Type": "application/json",
               "Transfer-Encoding": "chunked",
-              "Date": "Tue, 02 May 2023 11:32:09 GMT",
-              "Keep-Alive": "timeout=60",
-              "Connection": "keep-alive"
+              "Date": "Wed, 10 May 2023 13:30:48 GMT",
+              "Connection": "close"
             },
             "body": {
-              "id": 1,
-              "firstName": "George",
-              "lastName": "Franklin",
-              "address": "110 W. Liberty St.",
-              "city": "Madison",
-              "telephone": "6085551023",
-              "pets": [
-                {
-                  "id": 1,
-                  "name": "Leo",
-                  "birthDate": "2010-09-07",
-                  "type": {
-                    "id": 1,
-                    "name": "cat"
-                  }
-                }
-              ]
+              "timestamp": "2023-05-10T13:30:48.485+00:00",
+              "status": 503,
+              "error": "Service Unavailable",
+              "path": "/owners/experiment8_2/1"
             }
           },
-          "start": "2023-05-02T11:32:03.482232",
+          "start": "2023-05-10T13:30:15.526229",
           "status": "succeeded",
-          "end": "2023-05-02T11:32:09.181331",
-          "duration": 5.699099,
+          "end": "2023-05-10T13:30:48.487155",
+          "duration": 32.960926,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "type": "probe",
+            "name": "we-can-retrieve-owners-data-cb-1",
+            "tolerance": [
+              200,
+              500,
+              503
+            ],
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:51333/owners/experiment8_2/1"
+            }
+          },
+          "output": {
+            "status": 503,
+            "headers": {
+              "Content-Type": "application/json",
+              "Transfer-Encoding": "chunked",
+              "Date": "Wed, 10 May 2023 13:31:21 GMT",
+              "Connection": "close"
+            },
+            "body": {
+              "timestamp": "2023-05-10T13:31:21.487+00:00",
+              "status": 503,
+              "error": "Service Unavailable",
+              "path": "/owners/experiment8_2/1"
+            }
+          },
+          "start": "2023-05-10T13:30:48.489157",
+          "status": "succeeded",
+          "end": "2023-05-10T13:31:21.492140",
+          "duration": 33.002983,
           "tolerance_met": true
         }
       ]
@@ -200,14 +238,15 @@
         {
           "activity": {
             "type": "probe",
-            "name": "we-can-retrieve-owners-data",
+            "name": "we-can-retrieve-owners-data-cb-1",
             "tolerance": [
               200,
-              500
+              500,
+              503
             ],
             "provider": {
               "type": "http",
-              "url": "http://localhost:59020/owners/experiment4/1"
+              "url": "http://localhost:51333/owners/experiment8/1"
             }
           },
           "output": {
@@ -215,33 +254,69 @@
             "headers": {
               "Content-Type": "application/json",
               "Transfer-Encoding": "chunked",
-              "Date": "Tue, 02 May 2023 11:32:09 GMT",
+              "Date": "Wed, 10 May 2023 13:31:21 GMT",
               "Connection": "close"
             },
             "body": {
-              "timestamp": "2023-05-02T11:32:09.272+00:00",
+              "timestamp": "2023-05-10T13:31:21.648+00:00",
               "status": 500,
               "error": "Internal Server Error",
-              "path": "/owners/experiment4/1"
+              "path": "/owners/experiment8/1"
             }
           },
-          "start": "2023-05-02T11:32:09.251328",
+          "start": "2023-05-10T13:31:21.619140",
           "status": "succeeded",
-          "end": "2023-05-02T11:32:09.274327",
-          "duration": 0.022999,
+          "end": "2023-05-10T13:31:21.651144",
+          "duration": 0.032004,
           "tolerance_met": true
         },
         {
           "activity": {
             "type": "probe",
-            "name": "we-can-retrieve-owner-by-id-data",
+            "name": "we-can-retrieve-owners-data-cb-1",
             "tolerance": [
               200,
-              500
+              500,
+              503
             ],
             "provider": {
               "type": "http",
-              "url": "http://localhost:59020/owners/1"
+              "url": "http://localhost:51333/owners/experiment8_2/1"
+            }
+          },
+          "output": {
+            "status": 500,
+            "headers": {
+              "Content-Type": "application/json",
+              "Transfer-Encoding": "chunked",
+              "Date": "Wed, 10 May 2023 13:31:21 GMT",
+              "Connection": "close"
+            },
+            "body": {
+              "timestamp": "2023-05-10T13:31:21.674+00:00",
+              "status": 500,
+              "error": "Internal Server Error",
+              "path": "/owners/experiment8_2/1"
+            }
+          },
+          "start": "2023-05-10T13:31:21.658141",
+          "status": "succeeded",
+          "end": "2023-05-10T13:31:21.677146",
+          "duration": 0.019005,
+          "tolerance_met": true
+        },
+        {
+          "activity": {
+            "type": "probe",
+            "name": "we-can-retrieve-owners-data-cb-1",
+            "tolerance": [
+              200,
+              500,
+              503
+            ],
+            "provider": {
+              "type": "http",
+              "url": "http://localhost:51333/owners/experiment8_2/1"
             }
           },
           "output": {
@@ -249,7 +324,7 @@
             "headers": {
               "Content-Type": "application/json",
               "Transfer-Encoding": "chunked",
-              "Date": "Tue, 02 May 2023 11:32:14 GMT",
+              "Date": "Wed, 10 May 2023 13:31:39 GMT",
               "Keep-Alive": "timeout=60",
               "Connection": "keep-alive"
             },
@@ -273,10 +348,10 @@
               ]
             }
           },
-          "start": "2023-05-02T11:32:09.275328",
+          "start": "2023-05-10T13:31:21.679138",
           "status": "succeeded",
-          "end": "2023-05-02T11:32:14.292310",
-          "duration": 5.016982,
+          "end": "2023-05-10T13:31:39.278887",
+          "duration": 17.599749,
           "tolerance_met": true
         }
       ]
@@ -289,7 +364,7 @@
         "name": "enable_chaosmonkey",
         "provider": {
           "arguments": {
-            "base_url": "http://localhost:59020/actuator"
+            "base_url": "http://localhost:51333/actuator"
           },
           "func": "enable_chaosmonkey",
           "module": "chaosspring.actions",
@@ -297,25 +372,25 @@
         },
         "type": "action"
       },
-      "output": "{\"enabledAt\":\"2023-05-02T13:31:10.418+02:00\",\"enabledFor\":{\"raw\":\"PT58.779S\",\"formatted\":\"58 seconds\"},\"enabled\":true}",
-      "start": "2023-05-02T11:32:09.187332",
+      "output": "{\"enabledAt\":\"2023-05-10T15:29:01.354+02:00\",\"enabledFor\":{\"raw\":\"PT2M20.16S\",\"formatted\":\"2 minutes 20 seconds\"},\"enabled\":true}",
+      "start": "2023-05-10T13:31:21.502144",
       "status": "succeeded",
-      "end": "2023-05-02T11:32:09.206331",
-      "duration": 0.018999
+      "end": "2023-05-10T13:31:21.530144",
+      "duration": 0.028
     },
     {
       "activity": {
         "name": "configure_assaults",
         "provider": {
           "arguments": {
-            "base_url": "http://localhost:59020/actuator",
+            "base_url": "http://localhost:51333/actuator",
             "assaults_configuration": {
               "level": 2,
               "deterministic": false,
               "latencyRangeStart": 5000,
-              "latencyRangeEnd": 5000,
+              "latencyRangeEnd": 7000,
               "latencyActive": true,
-              "exceptionsActive": false,
+              "exceptionsActive": true,
               "killApplicationActive": false,
               "exception": {
                 "type": "java.net.ConnectException",
@@ -335,10 +410,10 @@
         "type": "action"
       },
       "output": "Assault config has changed",
-      "start": "2023-05-02T11:32:09.207329",
+      "start": "2023-05-10T13:31:21.533142",
       "status": "succeeded",
-      "end": "2023-05-02T11:32:09.234331",
-      "duration": 0.027002
+      "end": "2023-05-10T13:31:21.587139",
+      "duration": 0.053997
     },
     {
       "activity": {
@@ -346,7 +421,7 @@
         "tolerance": 200,
         "provider": {
           "type": "http",
-          "url": "http://localhost:59020/actuator/chaosmonkey/watchers",
+          "url": "http://localhost:51333/actuator/chaosmonkey/watchers",
           "method": "POST",
           "headers": {
             "Content-Type": "application/json"
@@ -366,19 +441,19 @@
         "headers": {
           "Content-Type": "text/plain;charset=UTF-8",
           "Content-Length": "26",
-          "Date": "Tue, 02 May 2023 11:32:09 GMT",
+          "Date": "Wed, 10 May 2023 13:31:21 GMT",
           "Keep-Alive": "timeout=60",
           "Connection": "keep-alive"
         },
         "body": "Watcher config has changed"
       },
-      "start": "2023-05-02T11:32:09.236332",
+      "start": "2023-05-10T13:31:21.591139",
       "status": "succeeded",
-      "end": "2023-05-02T11:32:09.247329",
-      "duration": 0.010997
+      "end": "2023-05-10T13:31:21.613141",
+      "duration": 0.022002
     }
   ],
   "rollbacks": [],
-  "end": "2023-05-02T11:32:14.301295",
-  "duration": 17.68632745742798
+  "end": "2023-05-10T13:31:39.282886",
+  "duration": 116.00579380989075
 }

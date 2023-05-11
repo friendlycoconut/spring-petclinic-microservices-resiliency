@@ -66,8 +66,8 @@ public class OwnersService {
             ownersList = ownerRepository.findAll();
         return ownersList;
     }
-
-
+//    @TimeLimiter(name = "timeLimiterExp2_6")
+   //@Retry(name="retryExp5")
     public Optional<Owner> getOwnerById(int ownerId) {
         System.out.println(" Making a request to " + SERVICE_NAME + " (id) "+ " at :" + LocalDateTime.now());
 
@@ -79,7 +79,7 @@ public class OwnersService {
         return owner;
     }
     @TimeLimiter(name = "timeLimiterExp2")
-    @Retry(name = "retryExp3Delay")
+    @Retry(name = "retryExp3Delay_1")
     public CompletableFuture<Optional<Owner>> getOwnerByIdExperiment3(int ownerId){
         return CompletableFuture.supplyAsync(() -> {
             return  ownerRepository.findById(ownerId);
@@ -93,6 +93,22 @@ public class OwnersService {
             return  ownerRepository.findById(ownerId);
         });
     }
+
+
+    @Retry(name="retryExp7")
+    public Optional<Owner> getOwnerByIdExperiment7(int ownerId) {
+        System.out.println(" Making a request to " + SERVICE_NAME + " (id) "+ " at :" + LocalDateTime.now());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        final Optional<Owner> owner = ownerRepository.findById(ownerId);
+
+        return owner;
+    }
+
+
+
 
     public Optional<Owner> getOwnerByIdRetryExponential(int ownerId) {
 
@@ -123,24 +139,37 @@ public class OwnersService {
 
     @PostConstruct
     public void postConstruct() {
-
         registry
-            .retry("retryExp3")
+            .retry("retryExp7")
             .getEventPublisher()
             .onRetry(
                 event -> {
-                System.out.println( "Retry attemps:" +event.getNumberOfRetryAttempts());
-                System.out.println( "Event call before change:" + registry.retry("retryExp2").getRetryConfig().getMaxAttempts());
-                if(event.getNumberOfRetryAttempts()==2){
-                    registry.replace("retryExp2", registry.retry("retryExp1"));
 
-            System.out.println( "Event call:" + registry.retry("retryExp2").getRetryConfig().getMaxAttempts());
-
+                log.info( "Retry attemps:" +event.getNumberOfRetryAttempts());
+                log.info( "Event call before change:" + registry.retry("retryExp7")
+                    .getRetryConfig()
+                    .getMaxAttempts());
+                if(event.getNumberOfRetryAttempts()==3){
+                    registry.replace("retryExp7", registry.retry("retryExp7_1"));
                 }});
 
 
+        registry
+            .retry("retryExp7_1")
+            .getEventPublisher()
+            .onRetry(
+                event -> {
+
+                    log.info( "Retry attemps 7_1:" +event.getNumberOfRetryAttempts());
+                    log.info( "Event call before change: 7_1" + registry.retry("retryExp7")
+                        .getRetryConfig()
+                        .getMaxAttempts());
+                    });
+
 
     }
+
+
 
 
     static class RetryProperties {
