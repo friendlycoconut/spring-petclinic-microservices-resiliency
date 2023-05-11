@@ -66,7 +66,7 @@ public class OwnersService {
             ownersList = ownerRepository.findAll();
         return ownersList;
     }
-//    @TimeLimiter(name = "timeLimiterExp2_6")
+//
    //@Retry(name="retryExp5")
     public Optional<Owner> getOwnerById(int ownerId) {
         System.out.println(" Making a request to " + SERVICE_NAME + " (id) "+ " at :" + LocalDateTime.now());
@@ -78,6 +78,22 @@ public class OwnersService {
 
         return owner;
     }
+
+    @TimeLimiter(name = "timeLimiterExp2_6")
+    public Optional<Owner> getOwnerByIdExperiment2(int ownerId) {
+        System.out.println(" Making a request to " + SERVICE_NAME + " (id) "+ " at :" + LocalDateTime.now());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        final Optional<Owner> owner = ownerRepository.findById(ownerId);
+
+        return owner;
+    }
+
+
+
+
     @TimeLimiter(name = "timeLimiterExp2")
     @Retry(name = "retryExp3Delay_1")
     public CompletableFuture<Optional<Owner>> getOwnerByIdExperiment3(int ownerId){
@@ -92,6 +108,18 @@ public class OwnersService {
         return CompletableFuture.supplyAsync(() -> {
             return  ownerRepository.findById(ownerId);
         });
+    }
+
+    @Retry(name="retryExp5")
+    public Optional<Owner> getOwnerByIdExperiment5(int ownerId) {
+        System.out.println(" Making a request to " + SERVICE_NAME + " (id) "+ " at :" + LocalDateTime.now());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        final Optional<Owner> owner = ownerRepository.findById(ownerId);
+
+        return owner;
     }
 
 

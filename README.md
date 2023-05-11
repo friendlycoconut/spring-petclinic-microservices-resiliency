@@ -1,36 +1,13 @@
-# Distributed version of the Spring PetClinic Sample Application built with Spring Cloud 
+## Illia Kostenko - 527409 
 
-[![Build Status](https://github.com/spring-petclinic/spring-petclinic-microservices/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-petclinic/spring-petclinic-microservices/actions/workflows/maven-build.yml)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-This microservices branch was initially derived from [AngularJS version](https://github.com/spring-petclinic/spring-petclinic-angular1) to demonstrate how to split sample Spring application into [microservices](http://www.martinfowler.com/articles/microservices.html).
-To achieve that goal, we use Spring Cloud Gateway, Spring Cloud Circuit Breaker, Spring Cloud Config, Micrometer Tracing, Resilience4j, Open Telemetry 
-and the Eureka Service Discovery from the [Spring Cloud Netflix](https://github.com/spring-cloud/spring-cloud-netflix) technology stack.
-
-## Starting services locally without Docker
-
-Every microservice is a Spring Boot application and can be started locally using IDE ([Lombok](https://projectlombok.org/) plugin has to be set up) or `../mvnw spring-boot:run` command. Please note that supporting services (Config and Discovery Server) must be started before any other application (Customers, Vets, Visits and API).
-Startup of Tracing server, Admin server, Grafana and Prometheus is optional.
-If everything goes well, you can access the following services at given location:
-* Discovery Server - http://localhost:8761
-* Config Server - http://localhost:8888
-* AngularJS frontend (API Gateway) - http://localhost:8080
-* Customers, Vets and Visits Services - random port, check Eureka Dashboard 
-* Tracing Server (Zipkin) - http://localhost:9411/zipkin/ (we use [openzipkin](https://github.com/openzipkin/zipkin/tree/master/zipkin-server))
-* Admin Server (Spring Boot Admin) - http://localhost:9090
-* Grafana Dashboards - http://localhost:3000
-* Prometheus - http://localhost:9091
-
-You can tell Config Server to use your local Git repository by using `native` Spring profile and setting
-`GIT_REPO` environment variable, for example:
-`-Dspring.profiles.active=native -DGIT_REPO=/projects/spring-petclinic-microservices-config`
+In this project were implemented resiliency patterns with the help of Resiliency4j. 
 
 ## Starting services locally with docker-compose
-In order to start entire infrastructure using Docker, you have to build images by executing `./mvnw clean install -P buildDocker` 
-from a project root. Once images are ready, you can start them with a single command
+In order to start entire infrastructure using Docker, we have to build images by executing `./mvnw clean install -P buildDocker` 
+from a project root. Once images are ready, we can start them with a single command
 `docker-compose up`. Containers startup order is coordinated with [`dockerize` script](https://github.com/jwilder/dockerize). 
 After starting services, it takes a while for API Gateway to be in sync with service registry,
-so don't be scared of initial Spring Cloud Gateway timeouts. You can track services availability using Eureka dashboard
+so don't be scared of initial Spring Cloud Gateway timeouts. we can track services availability using Eureka dashboard
 available by default at http://localhost:8761.
 
 The `master` branch uses an Eclipse Temurin with Java 17 as Docker base image.
@@ -38,11 +15,35 @@ The `master` branch uses an Eclipse Temurin with Java 17 as Docker base image.
 *NOTE: Under MacOSX or Windows, make sure that the Docker VM has enough memory to run the microservices. The default settings
 are usually not enough and make the `docker-compose up` painfully slow.*
 
+If everything goes well, we can access the following services at given location:
+* Discovery Server - http://localhost:8761
+* Config Server - http://localhost:8888
+* AngularJS frontend (API Gateway) - http://localhost:8080
+* Customers - http://localhost:8081
+* Vets - http://localhost:8082
+* Visit -  http://localhost:8083
+* Tracing Server (Zipkin) - http://localhost:9411/zipkin/ (we use [openzipkin](https://github.com/openzipkin/zipkin/tree/master/zipkin-server))
+* Admin Server (Spring Boot Admin) - http://localhost:9090
+* Grafana Dashboards - http://localhost:3000
+* Prometheus - http://localhost:9091
 
 ## Starting services locally with docker-compose and Java
-If you experience issues with running the system via docker-compose you can try running the `./scripts/run_all.sh` script that will start the infrastructure services via docker-compose and all the Java based applications via standard `nohup java -jar ...` command. The logs will be available under `${ROOT}/target/nameoftheapp.log`. 
+If we experience issues with running the system via docker-compose we can try running the `./scripts/run_all.sh` script that will start the infrastructure services via docker-compose and all the Java based applications via standard `nohup java -jar ...` command. The logs will be available under `${ROOT}/target/nameoftheapp.log`. 
 
 Each of the java based applications is started with the `chaos-monkey` profile in order to interact with Spring Boot Chaos Monkey. You can check out the (README)[scripts/chaos/README.md] for more information about how to use the `./scripts/chaos/call_chaos.sh` helper script to enable assaults.
+
+## Experiments 
+
+For the experiments should be created a Virtual environment: `python3 -m venv ~/.venvs/chaostk`.
+Before the usage virtual environment should be activated: `source  ~/.venvs/chaostk/bin/activate`.
+
+Then should be installed chaostoolkit and chaostoolkit-spring [ChaosToolKit Documentation](https://chaostoolkit.org/reference/usage/install/): `pip install -U chaostoolkit`, ` pip install -U chaostoolkit-spring`
+
+Each experiment can be run with next command: `chaos run experiment.json`.
+All experiments are located within the `experiments` folder, as individual `.json` files.
+
+After each run of the experiments, results of the logs for the threads are located in the root directory `testResults.json` file.
+To demonstrate the results was used the Plotly. It can be run with a help of file `Plotly.py`.
 
 ## Understanding the Spring Petclinic application
 
@@ -78,7 +79,7 @@ A JMeter load testing script is available to stress the application and generate
 
 ### Using Prometheus
 
-* Prometheus can be accessed from your local machine at http://localhost:9091
+* Prometheus can be accessed from  local machine at http://localhost:9091
 
 ### Using Grafana with Prometheus
 

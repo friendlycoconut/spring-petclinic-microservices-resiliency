@@ -13,10 +13,19 @@
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:50934/owners/experiment6/1"
+          "url": "http://localhost:8081/owners/experiment4/1"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owner-by-id-data",
+        "tolerance": [200,500,503],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8081/owners"
         }
       }
-      
     ]
   },
   "method": [
@@ -24,7 +33,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:50934/actuator"
+          "base_url": "http://localhost:8081/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -36,14 +45,14 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:50934/actuator",
+          "base_url": "http://localhost:8081/actuator",
           "assaults_configuration": {
-            "level": 2,
+            "level": 1,
             "deterministic": false,
-            "latencyRangeStart": 0,
-            "latencyRangeEnd": 0,
-            "latencyActive": false,
-            "exceptionsActive": true,
+            "latencyRangeStart": 1000,
+            "latencyRangeEnd": 3000,
+            "latencyActive": true,
+            "exceptionsActive": false,
             "killApplicationActive": false,
             "exception": {
               "type": "java.net.ConnectException",
@@ -67,14 +76,14 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:50934/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:8081/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"
         },
         "arguments": {
           "controller": false,
-          "restController": true,
+          "restController": false,
           "service": true,
           "repository": false,
           "component": false

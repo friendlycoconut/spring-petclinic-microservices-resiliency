@@ -13,7 +13,7 @@
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:61518/owners/experiment5/1"
+          "url": "http://localhost:8081/owners/experiment5/1"
         }
       },
       {
@@ -23,7 +23,7 @@
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:61518/owners/1"
+          "url": "http://localhost:8081/owners/1"
         }
       }
     ]
@@ -33,7 +33,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:61518/actuator"
+          "base_url": "http://localhost:8081/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -45,9 +45,9 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:61518/actuator",
+          "base_url": "http://localhost:8081/actuator",
           "assaults_configuration": {
-            "level": 3,1
+            "level": 3,
             "deterministic": false,
             "latencyRangeStart": 0,
             "latencyRangeEnd": 0,
@@ -76,7 +76,7 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:61518/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:8081/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"

@@ -162,9 +162,10 @@ class OwnerResource {
 
     @GetMapping(value = "experiment/{ownerId}")
     public Optional<Owner> findOwnerExperiment(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
-        return getStringFromOwnersJob(ownerId);
+        return getStringFromOwnersJobExp1(ownerId);
     }
 
+    /*
     @TimeLimiter(name = "timeLimiterExp2_1")
     @GetMapping(value="experiment2_1/{ownerId}")
     public CompletableFuture<Optional<Owner>> findOwnerExperiment2_1(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
@@ -228,26 +229,26 @@ class OwnerResource {
             }
         });
     }
+*/
 
     @TimeLimiter(name = "timeLimiterExp2_6")
     @GetMapping(value="experiment2_6/{ownerId}")
     public CompletableFuture<Optional<Owner>> findOwnerExperiment2_6(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return getStringFromOwnersJob(ownerId);
+                return getStringFromOwnersJobExp2(ownerId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
-
     @TimeLimiter(name = "timeLimiterExp2")
     @GetMapping(value="experiment2/{ownerId}")
     public CompletableFuture<Optional<Owner>> findOwnerExperiment2(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return getStringFromOwnersJob(ownerId);
+                return getStringFromOwnersJobExp2(ownerId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
@@ -258,7 +259,7 @@ class OwnerResource {
     public CompletableFuture<Optional<Owner>> findOwnerExperiment3(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return getStringFromOwnersJob(ownerId);
+                return getStringFromOwnersJobExp3(ownerId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
@@ -270,7 +271,7 @@ class OwnerResource {
     public CompletableFuture<Optional<Owner>> findOwnerExperiment4(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return getStringFromOwnersJob(ownerId);
+                return getStringFromOwnersJobExp4(ownerId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
@@ -278,23 +279,45 @@ class OwnerResource {
     }
 
     @GetMapping(value="experiment5/{ownerId}")
-
     public CompletableFuture<Optional<Owner>> findOwnerExperiment5(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return getStringFromOwnersJob(ownerId);
+                return getStringFromOwnersJobExp5(ownerId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
+    @GetMapping(value="experiment6/{ownerId}")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment6(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJobExp6(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @GetMapping(value="experiment7/{ownerId}")
+    public CompletableFuture<Optional<Owner>> findOwnerExperiment7(@PathVariable("ownerId") @Min(1) int ownerId) throws InterruptedException, ExecutionException {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return getStringFromOwnersJobExp7(ownerId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
     @GetMapping(value = "experiment8/{ownerId}")
     @CircuitBreaker(name = "experiment8")
     public CompletableFuture<Optional<Owner>> findOwnerExperiment8(@PathVariable("ownerId") @Min(1) int ownerId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return getStringFromOwnersJob(ownerId);
+                return getStringFromOwnersJobExp1(ownerId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
@@ -307,7 +330,7 @@ class OwnerResource {
     public CompletableFuture<Optional<Owner>> findOwnerExperiment8_1(@PathVariable("ownerId") @Min(1) int ownerId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return getStringFromOwnersJob(ownerId);
+                return getStringFromOwnersJobExp1(ownerId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
@@ -320,7 +343,7 @@ class OwnerResource {
     public CompletableFuture<Optional<Owner>> findOwnerExperiment8_2(@PathVariable("ownerId") @Min(1) int ownerId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return getStringFromOwnersJob(ownerId);
+                return getStringFromOwnersJobExp1(ownerId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
@@ -333,9 +356,87 @@ class OwnerResource {
 
 
 
-    private Optional<Owner> getStringFromOwnersJob( int ownerId) throws InterruptedException, ExecutionException {
+    private Optional<Owner> getStringFromOwnersJobExp1( int ownerId) throws InterruptedException, ExecutionException {
         IntervalFunction intervalFn = ofExponentialRandomBackoff(RetryProperties.INITIAL_INTERVAL, RetryProperties.MULTIPLIER, RetryProperties.RANDOMIZATION_FACTOR);
-        Function<Integer, Optional<Owner>> ownerIdFn = getOwnerIdFn(intervalFn);
+        Function<Integer, Optional<Owner>> ownerIdFn = getOwnerIdFnExp1(intervalFn);
+        return getOwnerBeExecutedThreads(ownerId, ownerIdFn);
+    }
+
+    private Optional<Owner> getStringFromOwnersJobExp2( int ownerId) throws InterruptedException, ExecutionException {
+        IntervalFunction intervalFn = ofExponentialRandomBackoff(RetryProperties.INITIAL_INTERVAL, RetryProperties.MULTIPLIER, RetryProperties.RANDOMIZATION_FACTOR);
+        Function<Integer, Optional<Owner>> ownerIdFn = getOwnerIdFnExp2(intervalFn);
+        return getOwnerBeExecutedThreads(ownerId, ownerIdFn);
+    }
+
+    private Optional<Owner> getStringFromOwnersJobExp3( int ownerId) throws InterruptedException, ExecutionException {
+        IntervalFunction intervalFn = ofExponentialRandomBackoff(RetryProperties.INITIAL_INTERVAL, RetryProperties.MULTIPLIER, RetryProperties.RANDOMIZATION_FACTOR);
+        Function<Integer, Optional<Owner>> ownerIdFn = getOwnerIdFnExperiment3(intervalFn);
+        return getOwnerBeExecutedThreads(ownerId, ownerIdFn);
+    }
+
+    private Optional<Owner> getStringFromOwnersJobExp4( int ownerId) throws InterruptedException, ExecutionException {
+        IntervalFunction intervalFn = ofExponentialRandomBackoff(RetryProperties.INITIAL_INTERVAL, RetryProperties.MULTIPLIER, RetryProperties.RANDOMIZATION_FACTOR);
+        Function<Integer, Optional<Owner>> ownerIdFn = getOwnerIdFnExp4(intervalFn);
+        return getOwnerBeExecutedThreads(ownerId, ownerIdFn);
+    }
+
+    private Optional<Owner> getStringFromOwnersJobExp5( int ownerId) throws InterruptedException, ExecutionException {
+        IntervalFunction intervalFn = ofExponentialRandomBackoff(RetryProperties.INITIAL_INTERVAL, RetryProperties.MULTIPLIER, RetryProperties.RANDOMIZATION_FACTOR);
+        Function<Integer, Optional<Owner>> ownerIdFn = getOwnerIdFnExp5(intervalFn);
+        ExecutorService executors = newFixedThreadPool(3);
+
+        List<Callable<Optional<Owner>>> tasks = nCopies(50, () -> ownerIdFn.apply(ownerId));
+
+        List<Future<Optional<Owner>>> future = executors.invokeAll(tasks);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            String json = objectMapper.writeValueAsString(resultsByThread);
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) parser.parse(json);
+            try (PrintWriter out = new PrintWriter(new FileWriter("testResults.json"))) {
+                out.write(jsonObj.toJSONString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (JsonProcessingException | ParseException e) {
+            e.printStackTrace();
+        }
+
+        return future.get(0).get();
+    }
+
+    private Optional<Owner> getStringFromOwnersJobExp6( int ownerId) throws InterruptedException, ExecutionException {
+        IntervalFunction intervalFn = ofExponentialRandomBackoff(RetryProperties.INITIAL_INTERVAL, RetryProperties.MULTIPLIER, RetryProperties.RANDOMIZATION_FACTOR);
+        Function<Integer, Optional<Owner>> ownerIdFn = getRetriableOwnerIdFn(intervalFn);
+        ExecutorService executors = newFixedThreadPool(3);
+
+        List<Callable<Optional<Owner>>> tasks = nCopies(50, () -> ownerIdFn.apply(ownerId));
+
+        List<Future<Optional<Owner>>> future = executors.invokeAll(tasks);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            String json = objectMapper.writeValueAsString(resultsByThread);
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) parser.parse(json);
+            try (PrintWriter out = new PrintWriter(new FileWriter("testResults.json"))) {
+                out.write(jsonObj.toJSONString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (JsonProcessingException | ParseException e) {
+            e.printStackTrace();
+        }
+
+        return future.get(0).get();
+    }
+
+    private Optional<Owner> getStringFromOwnersJobExp7( int ownerId) throws InterruptedException, ExecutionException {
+        IntervalFunction intervalFn = ofExponentialRandomBackoff(RetryProperties.INITIAL_INTERVAL, RetryProperties.MULTIPLIER, RetryProperties.RANDOMIZATION_FACTOR);
+        Function<Integer, Optional<Owner>> ownerIdFn = getOwnerIdFnExp7(intervalFn);
         ExecutorService executors = newFixedThreadPool(3);
 
         List<Callable<Optional<Owner>>> tasks = nCopies(50, () -> ownerIdFn.apply(ownerId));
@@ -361,8 +462,82 @@ class OwnerResource {
     }
 
 
+    private Optional<Owner> getOwnerBeExecutedThreads(int ownerId, Function<Integer, Optional<Owner>> ownerIdFn) throws InterruptedException, ExecutionException {
+        ExecutorService executors = newFixedThreadPool(3);
+
+        List<Callable<Optional<Owner>>> tasks = nCopies(24, () -> ownerIdFn.apply(ownerId));
+
+        List<Future<Optional<Owner>>> future = executors.invokeAll(tasks);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            String json = objectMapper.writeValueAsString(resultsByThread);
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObj = (JSONObject) parser.parse(json);
+            try (PrintWriter out = new PrintWriter(new FileWriter("testResults1.json"))) {
+                out.write(jsonObj.toJSONString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (JsonProcessingException | ParseException e) {
+            e.printStackTrace();
+        }
+
+        return future.get(0).get();
+    }
 
 
+
+
+
+
+    private Function<Integer, Optional<Owner>> getOwnerIdFnExp1(IntervalFunction intervalFn) {
+        return id -> {
+            threadLogs();
+            return Optional.of(ownersService.getOwnerById(id).get());
+        };
+    }
+
+    private Function<Integer, Optional<Owner>> getOwnerIdFnExp2(IntervalFunction intervalFn) {
+        return id -> {
+            threadLogs();
+            return Optional.of(ownersService.getOwnerByIdExperiment2(id).get());
+        };
+    }
+
+    private Function<Integer, Optional<Owner>> getOwnerIdFnExperiment3(IntervalFunction intervalFn) {
+        return id -> {
+            threadLogs();
+            try {
+                return (ownersService.getOwnerByIdExperiment3(id).get());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
+
+    private Function<Integer, Optional<Owner>> getOwnerIdFnExp4(IntervalFunction intervalFn) {
+        return id -> {
+            threadLogs();
+            try {
+                return (ownersService.getOwnerByIdExperiment4(id).get());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        };
+    }
+
+    private Function<Integer, Optional<Owner>> getOwnerIdFnExp5(IntervalFunction intervalFn) {
+        return id -> {
+            threadLogs();
+            return Optional.of((ownersService.getOwnerByIdExperiment5(id).get()));
+        };
+    }
 
     private Function<Integer, Optional<Owner>> getRetriableOwnerIdFn(IntervalFunction intervalFn) {
         RetryConfig retryConfig = RetryConfig.custom()
@@ -379,26 +554,16 @@ class OwnerResource {
         });
     }
 
-    private Function<Integer, Optional<Owner>> getOwnerIdFn(IntervalFunction intervalFn) {
+    private Function<Integer, Optional<Owner>> getOwnerIdFnExp7(IntervalFunction intervalFn) {
         return id -> {
             threadLogs();
-            return Optional.of(ownersService.getOwnerById(id).get());
+            return Optional.of((ownersService.getOwnerByIdExperiment7(id).get()));
         };
     }
 
 
-    private Function<Integer, Optional<Owner>> getOwnerIdFnExperiment3(IntervalFunction intervalFn) {
-        return id -> {
-            threadLogs();
-            try {
-                return (ownersService.getOwnerByIdExperiment3(id).get());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        };
-    }
+
+
 
     private void threadLogs() {
         if (resultsByThread.containsKey(Thread.currentThread().getName())) {

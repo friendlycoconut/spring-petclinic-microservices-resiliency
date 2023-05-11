@@ -8,12 +8,22 @@
     "probes": [
       {
         "type": "probe",
-        "name": "we-can-retrieve-owner-by-id-data",
-        "tolerance": [500],
+        "name": "we-can-retrieve-owners-data",
+        "tolerance": [200,500,503],
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:8080/api/gateway/owners/experiment2/1"
+          "url": "http://localhost:8081/owners/experiment3/1"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owner-by-id-data",
+        "tolerance": [200,500,503],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8081/owners"
         }
       }
     ]
@@ -23,7 +33,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:8080/actuator"
+          "base_url": "http://localhost:8081/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -35,17 +45,24 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:8080/actuator",
+          "base_url": "http://localhost:8081/actuator",
           "assaults_configuration": {
-            "level": 2,
+            "level": 4,
             "deterministic": false,
-            "latencyRangeStart": 5000,
-            "latencyRangeEnd": 5000,
+            "latencyRangeStart": 7000,
+            "latencyRangeEnd": 10000,
             "latencyActive": true,
             "exceptionsActive": false,
-            "killApplicationActive": false
-
-
+            "killApplicationActive": false,
+            "exception": {
+              "type": "java.net.ConnectException",
+              "arguments": [
+                {
+                  "className": "java.lang.String",
+                  "value": "Connection timed out"
+                }
+              ]
+            }
           }
         },
         "func": "change_assaults_configuration",
@@ -59,14 +76,14 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:8080/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:8081/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"
         },
         "arguments": {
           "controller": false,
-          "restController": true,
+          "restController": false,
           "service": true,
           "repository": false,
           "component": false

@@ -13,27 +13,7 @@
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:51333/owners/experiment8/1"
-        }
-      },
-      {
-        "type": "probe",
-        "name": "we-can-retrieve-owners-data-cb-1",
-        "tolerance": [200,500,503],
-        "provider": {
-          "type": "http",
-
-          "url": "http://localhost:51333/owners/experiment8_2/1"
-        }
-      },
-      {
-        "type": "probe",
-        "name": "we-can-retrieve-owners-data-cb-1",
-        "tolerance": [200,500,503],
-        "provider": {
-          "type": "http",
-
-          "url": "http://localhost:51333/owners/experiment8_2/1"
+          "url": "http://localhost:8081/owners/experiment7/1"
         }
       }
     ]
@@ -43,7 +23,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:51333/actuator"
+          "base_url": "http://localhost:8081/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -55,12 +35,12 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:51333/actuator",
+          "base_url": "http://localhost:8081/actuator",
           "assaults_configuration": {
-            "level": 2,
+            "level": 1,
             "deterministic": false,
-            "latencyRangeStart": 5000,
-            "latencyRangeEnd": 7000,
+            "latencyRangeStart": 0,
+            "latencyRangeEnd": 0,
             "latencyActive": true,
             "exceptionsActive": true,
             "killApplicationActive": false,
@@ -86,7 +66,7 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:51333/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:8081/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"

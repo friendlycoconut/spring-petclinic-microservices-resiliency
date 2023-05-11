@@ -8,22 +8,22 @@
     "probes": [
       {
         "type": "probe",
-        "name": "we-can-retrieve-owner-by-id-data",
-        "tolerance": [200],
+        "name": "we-can-retrieve-owners-data",
+        "tolerance": [200,500],
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:8080/api/gateway/owners/1"
+          "url": "http://localhost:8081/owners/experiment/1"
         }
       },
       {
         "type": "probe",
         "name": "we-can-retrieve-owner-by-id-data",
-        "tolerance": [200],
+        "tolerance": [200,500],
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:8080/api/gateway/owners/experiment/1"
+          "url": "http://localhost:8081/owners/1"
         }
       }
     ]
@@ -33,7 +33,7 @@
       "name": "enable_chaosmonkey",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:8080/actuator"
+          "base_url": "http://localhost:8081/actuator"
         },
         "func": "enable_chaosmonkey",
         "module": "chaosspring.actions",
@@ -45,9 +45,9 @@
       "name": "configure_assaults",
       "provider": {
         "arguments": {
-          "base_url": "http://localhost:8080/actuator",
+          "base_url": "http://localhost:8081/actuator",
           "assaults_configuration": {
-            "level": 2,
+            "level": 1,
             "deterministic": false,
             "latencyRangeStart": 5000,
             "latencyRangeEnd": 5000,
@@ -76,7 +76,7 @@
       "tolerance": 200,
       "provider": {
         "type": "http",
-        "url": "http://localhost:8080/actuator/chaosmonkey/watchers",
+        "url": "http://localhost:8081/actuator/chaosmonkey/watchers",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"

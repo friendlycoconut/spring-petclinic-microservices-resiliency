@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "title": "Get owners with delay and exception without any patterns",
+  "description": "N/A",
+  "tags": [],
+  "steady-state-hypothesis": {
+    "title": "Get all owners is available",
+    "probes": [
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data-cb-1",
+        "tolerance": [200,500,503],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8081/owners/experiment8/1"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data-cb-2",
+        "tolerance": [200,500,503],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8081/owners/experiment8_2/1"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data-cb-3",
+        "tolerance": [200,500,503],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8081/owners/experiment8_2/1"
+        }
+      }
+    ]
+  },
+  "method": [
+    {
+      "name": "enable_chaosmonkey",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:8081/actuator"
+        },
+        "func": "enable_chaosmonkey",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_assaults",
+      "provider": {
+        "arguments": {
+          "base_url": "http://localhost:8081/actuator",
+          "assaults_configuration": {
+            "level": 2,
+            "deterministic": false,
+            "latencyRangeStart": 5000,
+            "latencyRangeEnd": 7000,
+            "latencyActive": true,
+            "exceptionsActive": true,
+            "killApplicationActive": false,
+            "exception": {
+              "type": "java.net.ConnectException",
+              "arguments": [
+                {
+                  "className": "java.lang.String",
+                  "value": "Connection timed out"
+                }
+              ]
+            }
+          }
+        },
+        "func": "change_assaults_configuration",
+        "module": "chaosspring.actions",
+        "type": "python"
+      },
+      "type": "action"
+    },
+    {
+      "name": "configure_repository_watcher",
+      "tolerance": 200,
+      "provider": {
+        "type": "http",
+        "url": "http://localhost:8081/actuator/chaosmonkey/watchers",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "arguments": {
+          "controller": false,
+          "restController": true,
+          "service": true,
+          "repository": false,
+          "component": false
+        }
+      },
+      "type": "action"
+    }
+  ],
+  "rollbacks": [
+
+  ]
+}
