@@ -8,15 +8,34 @@
     "probes": [
       {
         "type": "probe",
-        "name": "we-can-retrieve-owners-data",
+        "name": "we-can-retrieve-owners-data-cb-1",
         "tolerance": [200,500,503],
         "provider": {
           "type": "http",
 
-          "url": "http://localhost:8081/owners/experiment6/1"
+          "url": "http://localhost:8081/owners/experiment8/1"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data-cb-2",
+        "tolerance": [200,500,503],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8081/owners/experiment8_2/1"
+        }
+      },
+      {
+        "type": "probe",
+        "name": "we-can-retrieve-owners-data-cb-3",
+        "tolerance": [200,500,503],
+        "provider": {
+          "type": "http",
+
+          "url": "http://localhost:8081/owners/experiment8_2/1"
         }
       }
-      
     ]
   },
   "method": [
@@ -40,9 +59,9 @@
           "assaults_configuration": {
             "level": 2,
             "deterministic": false,
-            "latencyRangeStart": 0,
-            "latencyRangeEnd": 0,
-            "latencyActive": false,
+            "latencyRangeStart": 5000,
+            "latencyRangeEnd": 7000,
+            "latencyActive": true,
             "exceptionsActive": true,
             "killApplicationActive": false,
             "exception": {
